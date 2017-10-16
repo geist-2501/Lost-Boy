@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 2f6ca2c7eea12384aab776eaa195758d
+timeCreated: 1508100817
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Bad Axe Laser
+  fontNames:
+  - Bad Axe Laser
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
