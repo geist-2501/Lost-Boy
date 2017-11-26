@@ -1,0 +1,233 @@
+fileFormatVersion: 2
+guid: 633dfd52b0e17a447af3fca10fbf0a7a
+timeCreated: 1511381608
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Cube
+    100004: Cube.001
+    100006: Cube.002
+    100008: Cube.003
+    100010: Cube.004
+    100012: Cube.005
+    100014: Cube.006
+    100016: Cube.007
+    100018: Cube.008
+    100020: Cube.009
+    100022: Cube.010
+    100024: Cube.011
+    100026: Cube.012
+    100028: Cube.013
+    100030: Cube.014
+    100032: Cube.015
+    100034: Cube.016
+    100036: FloorBlock
+    100038: FloorFlat
+    100040: FloorOverhangCorner
+    100042: FloorOverhangCorner Collider
+    100044: FloorOverhangEdge
+    100046: FloorOverhangEdge Collider
+    100048: SciFi_to_Basic
+    100050: SciFi_to_Basic Collider
+    100052: Stair 4x3
+    100054: Stair 5x4
+    100056: Wall
+    100058: WallCornerInside
+    100060: WallCornerOutside
+    100062: WallDoorWay
+    100064: WallDoorWay Collider
+    400000: //RootNode
+    400002: Cube
+    400004: Cube.001
+    400006: Cube.002
+    400008: Cube.003
+    400010: Cube.004
+    400012: Cube.005
+    400014: Cube.006
+    400016: Cube.007
+    400018: Cube.008
+    400020: Cube.009
+    400022: Cube.010
+    400024: Cube.011
+    400026: Cube.012
+    400028: Cube.013
+    400030: Cube.014
+    400032: Cube.015
+    400034: Cube.016
+    400036: FloorBlock
+    400038: FloorFlat
+    400040: FloorOverhangCorner
+    400042: FloorOverhangCorner Collider
+    400044: FloorOverhangEdge
+    400046: FloorOverhangEdge Collider
+    400048: SciFi_to_Basic
+    400050: SciFi_to_Basic Collider
+    400052: Stair 4x3
+    400054: Stair 5x4
+    400056: Wall
+    400058: WallCornerInside
+    400060: WallCornerOutside
+    400062: WallDoorWay
+    400064: WallDoorWay Collider
+    2300000: Cube
+    2300002: Cube.001
+    2300004: Cube.002
+    2300006: Cube.003
+    2300008: Cube.004
+    2300010: Cube.005
+    2300012: Cube.006
+    2300014: Cube.007
+    2300016: Cube.008
+    2300018: Cube.009
+    2300020: Cube.010
+    2300022: Cube.011
+    2300024: Cube.012
+    2300026: Cube.013
+    2300028: Cube.014
+    2300030: Cube.015
+    2300032: Cube.016
+    2300034: FloorBlock
+    2300036: FloorFlat
+    2300038: FloorOverhangCorner
+    2300040: FloorOverhangCorner Collider
+    2300042: FloorOverhangEdge
+    2300044: FloorOverhangEdge Collider
+    2300046: SciFi_to_Basic
+    2300048: SciFi_to_Basic Collider
+    2300050: Stair 4x3
+    2300052: Stair 5x4
+    2300054: Wall
+    2300056: WallCornerInside
+    2300058: WallCornerOutside
+    2300060: WallDoorWay
+    2300062: WallDoorWay Collider
+    3300000: Cube
+    3300002: Cube.001
+    3300004: Cube.002
+    3300006: Cube.003
+    3300008: Cube.004
+    3300010: Cube.005
+    3300012: Cube.006
+    3300014: Cube.007
+    3300016: Cube.008
+    3300018: Cube.009
+    3300020: Cube.010
+    3300022: Cube.011
+    3300024: Cube.012
+    3300026: Cube.013
+    3300028: Cube.014
+    3300030: Cube.015
+    3300032: Cube.016
+    3300034: FloorBlock
+    3300036: FloorFlat
+    3300038: FloorOverhangCorner
+    3300040: FloorOverhangCorner Collider
+    3300042: FloorOverhangEdge
+    3300044: FloorOverhangEdge Collider
+    3300046: SciFi_to_Basic
+    3300048: SciFi_to_Basic Collider
+    3300050: Stair 4x3
+    3300052: Stair 5x4
+    3300054: Wall
+    3300056: WallCornerInside
+    3300058: WallCornerOutside
+    3300060: WallDoorWay
+    3300062: WallDoorWay Collider
+    4300000: Cube.010
+    4300002: Cube.011
+    4300004: Cube.016
+    4300006: Cube.015
+    4300008: Cube.013
+    4300010: Cube.012
+    4300012: Cube.008
+    4300014: Cube.006
+    4300016: Cube.005
+    4300018: Cube.004
+    4300020: Cube.002
+    4300022: FloorOverhangEdge Collider
+    4300024: FloorOverhangCorner Collider
+    4300026: WallDoorWay Collider
+    4300028: SciFi_to_Basic Collider
+    4300030: FloorOverhangEdge
+    4300032: FloorFlat
+    4300034: Stair 5x4
+    4300036: FloorOverhangCorner
+    4300038: FloorBlock
+    4300040: Stair 4x3
+    4300042: SciFi_to_Basic
+    4300044: WallDoorWay
+    4300046: Wall
+    4300048: WallCornerInside
+    4300050: WallCornerOutside
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

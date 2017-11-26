@@ -1,0 +1,149 @@
+fileFormatVersion: 2
+guid: 99e77eae5dbb8f143a8a2edca03fa5e4
+timeCreated: 1511299151
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Door
+    100002: DoorWay
+    100004: DoorWayCollider
+    100006: Floor
+    100008: InsideCorner
+    100010: InsideCornerCollider
+    100012: OutsideCorner
+    100014: OutsideCornerCollider
+    100016: //RootNode
+    100018: StairFloor
+    100020: StairFloorCollider
+    100022: StairWall
+    100024: StairWallCollider
+    100026: Wall
+    100028: WallCollider
+    400000: Door
+    400002: DoorWay
+    400004: DoorWayCollider
+    400006: Floor
+    400008: InsideCorner
+    400010: InsideCornerCollider
+    400012: OutsideCorner
+    400014: OutsideCornerCollider
+    400016: //RootNode
+    400018: StairFloor
+    400020: StairFloorCollider
+    400022: StairWall
+    400024: StairWallCollider
+    400026: Wall
+    400028: WallCollider
+    2300000: Door
+    2300002: DoorWay
+    2300004: DoorWayCollider
+    2300006: Floor
+    2300008: InsideCorner
+    2300010: InsideCornerCollider
+    2300012: OutsideCorner
+    2300014: OutsideCornerCollider
+    2300016: StairFloor
+    2300018: StairFloorCollider
+    2300020: StairWall
+    2300022: StairWallCollider
+    2300024: Wall
+    2300026: WallCollider
+    3300000: Door
+    3300002: DoorWay
+    3300004: DoorWayCollider
+    3300006: Floor
+    3300008: InsideCorner
+    3300010: InsideCornerCollider
+    3300012: OutsideCorner
+    3300014: OutsideCornerCollider
+    3300016: StairFloor
+    3300018: StairFloorCollider
+    3300020: StairWall
+    3300022: StairWallCollider
+    3300024: Wall
+    3300026: WallCollider
+    4300000: Door
+    4300002: StairFloorCollider
+    4300004: OutsideCornerCollider
+    4300006: StairWallCollider
+    4300008: DoorWayCollider
+    4300010: InsideCornerCollider
+    4300012: WallCollider
+    4300014: Floor
+    4300016: StairFloor
+    4300018: StairWall
+    4300020: DoorWay
+    4300022: OutsideCorner
+    4300024: InsideCorner
+    4300026: Wall
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
