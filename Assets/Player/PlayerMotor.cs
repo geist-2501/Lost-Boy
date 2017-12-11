@@ -4,8 +4,9 @@
 [RequireComponent(typeof(Collider))]
 public class PlayerMotor : MotorBaseClass {
 
-	[SerializeField]
-	private Camera cam;
+	[SerializeField] private Camera cam;
+	[SerializeField] private int health = 100;
+
 
 	private void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -32,6 +33,14 @@ public class PlayerMotor : MotorBaseClass {
 			cam.transform.Rotate(-cameraRotaion);
 		}
 
+	}
+
+	public void TakeDamage(int _damage) {
+		health -= _damage;
+		if (health <= 0) {
+			//TODO gameover!
+			Debug.Log("You are dead!");
+		}
 	}
 
 }

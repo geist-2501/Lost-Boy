@@ -9,6 +9,8 @@ public class ShootAtPlayerState : StateBaseClass {
 	GuardStateController gsc;
 	GameObject alert;
 
+	Vector3 playerPos;
+
 	public override void StateEnter() {
 		motor = GetComponent<GuardMotor>();
 		gsc = GetComponent<GuardStateController>();
@@ -19,7 +21,8 @@ public class ShootAtPlayerState : StateBaseClass {
 	}
 
 	public override void StateUpdate() {
-		motor.TurnTowards(motor.GetPlayerTransform().position);
+		playerPos = motor.GetPlayerTransform().position;
+		motor.TurnTowards(playerPos);
 		if (!motor.PlayerInVisionCone()) {
 			gsc.ChangeState(typeof(PursueState));
 		}

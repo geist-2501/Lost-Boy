@@ -38,6 +38,12 @@ ModelImporter:
     100060: WallCornerOutside
     100062: WallDoorWay
     100064: WallDoorWay Collider
+    100066: WallDoorWay Collider.001
+    100068: WallTall
+    100070: WallTallCornerInside
+    100072: WallTallCornerOutside
+    100074: WallTallDoorWay
+    100076: FloorFlatCorner
     400000: //RootNode
     400002: Cube
     400004: Cube.001
@@ -71,6 +77,12 @@ ModelImporter:
     400060: WallCornerOutside
     400062: WallDoorWay
     400064: WallDoorWay Collider
+    400066: WallDoorWay Collider.001
+    400068: WallTall
+    400070: WallTallCornerInside
+    400072: WallTallCornerOutside
+    400074: WallTallDoorWay
+    400076: FloorFlatCorner
     2300000: Cube
     2300002: Cube.001
     2300004: Cube.002
@@ -103,6 +115,12 @@ ModelImporter:
     2300058: WallCornerOutside
     2300060: WallDoorWay
     2300062: WallDoorWay Collider
+    2300064: WallDoorWay Collider.001
+    2300066: WallTall
+    2300068: WallTallCornerInside
+    2300070: WallTallCornerOutside
+    2300072: WallTallDoorWay
+    2300074: FloorFlatCorner
     3300000: Cube
     3300002: Cube.001
     3300004: Cube.002
@@ -135,6 +153,12 @@ ModelImporter:
     3300058: WallCornerOutside
     3300060: WallDoorWay
     3300062: WallDoorWay Collider
+    3300064: WallDoorWay Collider.001
+    3300066: WallTall
+    3300068: WallTallCornerInside
+    3300070: WallTallCornerOutside
+    3300072: WallTallDoorWay
+    3300074: FloorFlatCorner
     4300000: Cube.010
     4300002: Cube.011
     4300004: Cube.016
@@ -161,6 +185,12 @@ ModelImporter:
     4300046: Wall
     4300048: WallCornerInside
     4300050: WallCornerOutside
+    4300052: WallDoorWay Collider.001
+    4300054: WallTallCornerOutside
+    4300056: WallTallDoorWay
+    4300058: WallTallCornerInside
+    4300060: WallTall
+    4300062: FloorFlatCorner
   materials:
     importMaterials: 1
     materialName: 0

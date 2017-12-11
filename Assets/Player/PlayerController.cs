@@ -15,12 +15,10 @@ public class PlayerController : MonoBehaviour {
 
 
 	private MotorBaseClass motor;
-	private Camera cam;
+	
 
 	private void Start() {
 		Cursor.lockState = CursorLockMode.Locked;
-
-		cam = transform.GetComponentInChildren<Camera>();
 	}
 
 	public void ChangeMotor(MotorBaseClass _motor) {

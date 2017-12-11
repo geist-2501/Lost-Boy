@@ -5,21 +5,32 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class GuardMotor : MonoBehaviour {
 
+	[SerializeField] private GameObject pointerObject;
+
 	public float viewDistance = 5f;
 	[SerializeField] private float viewAngle = 10f;
 
 	[SerializeField] private float moveSpeed = 2f;
 	[SerializeField] private float turnSpeed = 2f;
-	[SerializeField] private float waitTime = 2f;
-
-
 
 	private GameObject player;
+	private PlayerMotor playerMotor;
 	private Rigidbody rb;
+	private Animator anim;
+	private AudioSource audSrc;
 
 	private void Start() {
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.FindGameObjectWithTag("Player");
+		playerMotor = player.GetComponent<PlayerMotor>();
+		anim = GetComponent<Animator>();
+		audSrc = GetComponent<AudioSource>();
+	}
+
+	public void ChangeVeiwAngle(float _newAngle) {
+		if (_newAngle < 180 && _newAngle > 0) {
+			viewAngle = _newAngle;
+		}
 	}
 
 	public bool PlayerInVisionCone() {
@@ -64,34 +75,28 @@ public class GuardMotor : MonoBehaviour {
 		return player.transform;
 	}
 
-	public void StartPatrol (Transform _path) {
-		if (_path.childCount == 0) {
-			throw new UnityException("Path has no waypoints!");
-		}
-
-		//Store virtual waypoint positions.
-		Vector3[] _waypoints = new Vector3[_path.childCount];
-		for (int i = 0; i < _waypoints.Length; i++) {
-			_waypoints[i] = _path.GetChild(i).position;
-			_waypoints[i] = new Vector3(_waypoints[i].x, transform.position.y, _waypoints[i].z); //Raise waypoints level to the guard.
-		}
-
-		StartCoroutine(Patrol(_waypoints));
-	}
-
-	public void StopPatrol () {
-		StopAllCoroutines();
-	}
-
 	public void TurnTowards(Vector3 _dir) {
+		//Calculate the vector of mag. 1 point in the supplied direction.
 		Vector3 _targetDir = Vector3.Normalize(_dir - transform.position);
-		//Rotate around the z axis only, hence exclude it.
-		Vector3 _isolatedDir = new Vector3(_targetDir.x, 0f, _targetDir.z).normalized;
-		transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, _isolatedDir, turnSpeed * Time.deltaTime, 0.0f), transform.up);
+		//Rotate around the y axis only, hence exclude it.
+		Vector3 _isolatedDirY = new Vector3(_targetDir.x, 0f, _targetDir.z).normalized;
+		//Rotate around the x axis only, hence exclude it.
+		Vector3 _isolatedDirX = new Vector3(0f, _targetDir.y, _targetDir.z).normalized;
+		//Apply y axis rotation to guard body.
+		transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, _isolatedDirY, turnSpeed * Time.deltaTime, 0.0f), transform.up);
+
+		if (pointerObject) {
+			//Apply x axis rotation to pointer, only if it's assigned.
+			pointerObject.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(pointerObject.transform.forward,
+				_targetDir, turnSpeed * Time.deltaTime, 0.0f), transform.up);
+		} 
+
 	}
 
 	public bool MoveTowards(Vector3 _pos) {
+
 		Debug.DrawLine(transform.position, _pos);
+
 		Vector3 _targetDir = _pos - transform.position;
 		Vector3 _isolatedDir = new Vector3(_targetDir.x, 0f , _targetDir.z); //Isolate to guards current elevation.
 
@@ -99,6 +104,8 @@ public class GuardMotor : MonoBehaviour {
 			return false; //Returning false because it can't get any closer to _pos.
 		}
 
+		//If there is a large difference in direction, stop and correct it,
+		//Otherwise it must be a small difference and can be corrected while moving.
 		if (Vector3.Angle(_isolatedDir.normalized, transform.forward) <= 5.0f) {
 			TurnTowards(_pos);
 			rb.MovePosition(rb.position + transform.forward * moveSpeed * Time.deltaTime);
@@ -111,37 +118,4 @@ public class GuardMotor : MonoBehaviour {
 		
 	}
 
-	private IEnumerator Patrol (Vector3[] _waypoints) {
-
-		int _nextWaypoint = 0; //Initialize.
-
-		//Find closest waypoint.
-		for (int i = 0; i < _waypoints.Length; i++) {
-			float closestWaypointDist = (_waypoints[_nextWaypoint] - transform.position).magnitude;
-			float currentWaypointDist = (_waypoints[i] - transform.position).magnitude;
-			if (currentWaypointDist < closestWaypointDist) {
-				_nextWaypoint = i;
-			}
-		}
-
-		Vector3 _targetWaypointDir = Vector3.Normalize(_waypoints[_nextWaypoint] - transform.position);
-
-		while (true) {
-
-			//Look at waypoint first, then move.
-			if (transform.rotation == Quaternion.LookRotation(_targetWaypointDir)) {
-				transform.position = Vector3.MoveTowards(transform.position, _waypoints[_nextWaypoint], moveSpeed * Time.deltaTime);
-			} else {
-				TurnTowards(_waypoints[_nextWaypoint]); ;
-			}
-
-			//If guard has arrived at the waypoint, queue up the next one and wait.
-			if (transform.position == _waypoints[_nextWaypoint]) {
-				_nextWaypoint = (_nextWaypoint + 1) % _waypoints.Length;
-				_targetWaypointDir = _waypoints[_nextWaypoint] - transform.position;
-				yield return new WaitForSeconds(waitTime);
-			}
-			yield return null;
-		}
-	}
 }
