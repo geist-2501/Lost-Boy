@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class Gun : MonoBehaviour {
+public class AIgun : MonoBehaviour {
 
 	public int damage;
 	public float range;
@@ -13,7 +13,6 @@ public class Gun : MonoBehaviour {
 	private int currentAmmo;
 	private bool isReloading = false;
 
-	public Camera fpsCam;
 	public ParticleSystem muzzleFlash;
 	public GameObject impactEffect;
 	public AudioClip gunShot;
@@ -41,12 +40,9 @@ public class Gun : MonoBehaviour {
 			return;
 		}
 
-		if (Input.GetButtonDown("Reload")) {
-			StartCoroutine(Reload());
-			return;
-		}
 
-		if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire) {
+		//TODO replace driver with actual condition.
+		if (true && Time.time >= nextTimeToFire) {
 			nextTimeToFire = Time.time + 1f / fireRate;
 			Shoot();
 		}
@@ -73,15 +69,14 @@ public class Gun : MonoBehaviour {
 
 		audioSource.Play();
 
-		if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out _hit, range)) {
+		if (Physics.Raycast(transform.position, transform.forward, out _hit, range)) {
 			GameObject impact = Instantiate(impactEffect, _hit.point, Quaternion.LookRotation(_hit.normal));
 			Destroy(impact, 1f);
-			GuardMotor target = _hit.transform.GetComponent<GuardMotor>();
+			PlayerMotor target = _hit.transform.GetComponent<PlayerMotor>();
 			if (target != null) {
 				target.TakeDamage(damage);
 			}
 		}
 
 	}
-
 }

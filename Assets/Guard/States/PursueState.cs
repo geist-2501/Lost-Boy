@@ -36,7 +36,6 @@ public class PursueState : StateBaseClass {
 			if (CurrentCorner < pathToLastKnownPos.corners.Length - 1) {
 				CurrentCorner++;
 			} else {
-				//TODO Count down to going back to patrolling
 				motor.ChangeVeiwAngle(90);
 				timer += Time.deltaTime;
 				if (timer >= 1) {

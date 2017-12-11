@@ -5,26 +5,23 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class GuardMotor : MonoBehaviour {
 
+	[SerializeField] private int health = 100;
+
+
 	[SerializeField] private GameObject pointerObject;
 
-	public float viewDistance = 5f;
+	[SerializeField] private float viewDistance = 5f;
 	[SerializeField] private float viewAngle = 10f;
 
 	[SerializeField] private float moveSpeed = 2f;
 	[SerializeField] private float turnSpeed = 2f;
 
 	private GameObject player;
-	private PlayerMotor playerMotor;
 	private Rigidbody rb;
-	private Animator anim;
-	private AudioSource audSrc;
 
 	private void Start() {
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.FindGameObjectWithTag("Player");
-		playerMotor = player.GetComponent<PlayerMotor>();
-		anim = GetComponent<Animator>();
-		audSrc = GetComponent<AudioSource>();
 	}
 
 	public void ChangeVeiwAngle(float _newAngle) {
@@ -117,5 +114,13 @@ public class GuardMotor : MonoBehaviour {
 
 		
 	}
+
+	public void TakeDamage(int _damage) {
+		health -= _damage;
+		if (health <= 0) {
+			Destroy(gameObject);
+		}
+	}
+
 
 }
