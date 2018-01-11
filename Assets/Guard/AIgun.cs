@@ -22,6 +22,8 @@ public class AIgun : MonoBehaviour {
 
 	private float nextTimeToFire = 0;
 
+	public bool engage = false;
+
 	private void Start() {
 		audioSource = GetComponent<AudioSource>();
 		anim = GetComponent<Animator>();
@@ -40,9 +42,7 @@ public class AIgun : MonoBehaviour {
 			return;
 		}
 
-
-		//TODO replace driver with actual condition.
-		if (true && Time.time >= nextTimeToFire) {
+		if (engage && Time.time >= nextTimeToFire) {
 			nextTimeToFire = Time.time + 1f / fireRate;
 			Shoot();
 		}
@@ -69,10 +69,12 @@ public class AIgun : MonoBehaviour {
 
 		audioSource.Play();
 
+		anim.SetTrigger("Recoil");
+
 		if (Physics.Raycast(transform.position, transform.forward, out _hit, range)) {
 			GameObject impact = Instantiate(impactEffect, _hit.point, Quaternion.LookRotation(_hit.normal));
 			Destroy(impact, 1f);
-			PlayerMotor target = _hit.transform.GetComponent<PlayerMotor>();
+			PlayerController target = _hit.transform.GetComponent<PlayerController>();
 			if (target != null) {
 				target.TakeDamage(damage);
 			}

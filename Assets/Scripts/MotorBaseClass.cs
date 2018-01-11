@@ -4,11 +4,13 @@
 public abstract class MotorBaseClass : MonoBehaviour {
 
 	//TODO change to properties
+	public bool canMove = true;
 	public Vector3 velocity = Vector3.zero;
 	public Vector3 rotation = Vector3.zero;
 	public Vector3 cameraRotaion = Vector3.zero;
 	public bool canJump = true;
 	public Vector3 jumpForce;
+	public bool isInteracting = false;
 
 	public Rigidbody rb;
 	public CapsuleCollider col;
@@ -36,10 +38,17 @@ public abstract class MotorBaseClass : MonoBehaviour {
 		cameraRotaion = _cameraRotaion;
 	}
 
+	public virtual void Interact() {
+		isInteracting = true;
+	}
+
 
 	private void FixedUpdate() {
-		PerformMovement();
-		PerformRotation();
+		if (canMove) {
+			PerformMovement();
+			PerformRotation();
+			PerformInteractions();
+		}
 	}
 
 
@@ -48,4 +57,5 @@ public abstract class MotorBaseClass : MonoBehaviour {
 
 	public abstract void PerformRotation();
 
+	public abstract void PerformInteractions();
 }

@@ -36,7 +36,7 @@ public class GuardMotor : MonoBehaviour {
 		Vector3 _playerDisplacement = player.transform.position - transform.position;
 		Ray _guard2player = new Ray(transform.position, _playerDisplacement);
 
-		bool _playerVisible = Physics.Raycast(_guard2player, out _hit, viewDistance, ~8); //~2 represents everything but the IgnoreRaycast layer.
+		bool _playerVisible = Physics.Raycast(_guard2player, out _hit, viewDistance, ~8, QueryTriggerInteraction.Ignore); //~2 represents everything but the IgnoreRaycast layer.
 		Debug.DrawRay(transform.position, _playerDisplacement, Color.red);
 
 		float _angleInRad = viewAngle * Mathf.Deg2Rad;

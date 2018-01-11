@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 4247fc66916096748aae51cfb551aa04
+timeCreated: 1513196710
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: BodoniXT
+  fontNames:
+  - BodoniXT
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

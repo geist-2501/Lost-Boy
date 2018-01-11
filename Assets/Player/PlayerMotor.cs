@@ -5,12 +5,15 @@
 public class PlayerMotor : MotorBaseClass {
 
 	[SerializeField] private Camera cam;
-	[SerializeField] private int health = 100;
+	[SerializeField] private float interactionRange = 2f;
+
+	private HUDManager HUD;
 
 
 	private void Start() {
 		rb = GetComponent<Rigidbody>();
 		col = GetComponent<CapsuleCollider>();
+		HUD = FindObjectOfType<HUDManager>();
 	}
 
 	public override void PerformMovement() {
@@ -32,15 +35,37 @@ public class PlayerMotor : MotorBaseClass {
 		if (cam != null) {
 			cam.transform.Rotate(-cameraRotaion);
 		}
-
 	}
 
-	public void TakeDamage(int _damage) {
-		health -= _damage;
-		if (health <= 0) {
-			//TODO gameover!
-			Debug.Log("You are dead!");
+	public override void PerformInteractions() {
+
+		Ray _cameraForward = new Ray(cam.transform.position, cam.transform.forward);
+		RaycastHit hit;
+		InteractableBaseClass interactable = null;
+
+		if (Physics.Raycast(_cameraForward, out hit, interactionRange)) {
+			bool _interactablePresent = hit.transform.gameObject.GetComponent<InteractableBaseClass>();
+			HUD.SetInteractText(_interactablePresent);
+			if (_interactablePresent) {
+				interactable = hit.transform.gameObject.GetComponent<InteractableBaseClass>();
+			} else {
+				interactable = null;
+			}
+		} else {
+			HUD.SetInteractText(false);
+		}
+
+
+		if (isInteracting) {
+			isInteracting = false;
+			if (interactable) {
+				interactable.Activate();
+			}
 		}
 	}
+
+
+
+
 
 }

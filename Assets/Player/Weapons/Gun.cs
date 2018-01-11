@@ -21,6 +21,8 @@ public class Gun : MonoBehaviour {
 	private AudioSource audioSource;
 	private Animator anim;
 
+	public bool isAbleToShoot = true;
+
 	private float nextTimeToFire = 0;
 
 	private void Start() {
@@ -31,24 +33,25 @@ public class Gun : MonoBehaviour {
 	}
 
 	private void Update() {
+		if (isAbleToShoot) {
+			if (isReloading) {
+				return;
+			}
 
-		if (isReloading) {
-			return;
-		}
+			if (currentAmmo <= 0) {
+				StartCoroutine(Reload());
+				return;
+			}
 
-		if (currentAmmo <= 0) {
-			StartCoroutine(Reload());
-			return;
-		}
+			if (Input.GetKeyDown(KeyCode.R)) {
+				StartCoroutine(Reload());
+				return;
+			}
 
-		if (Input.GetButtonDown("Reload")) {
-			StartCoroutine(Reload());
-			return;
-		}
-
-		if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire) {
-			nextTimeToFire = Time.time + 1f / fireRate;
-			Shoot();
+			if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire) {
+				nextTimeToFire = Time.time + 1f / fireRate;
+				Shoot();
+			}
 		}
 
 	}
@@ -73,7 +76,7 @@ public class Gun : MonoBehaviour {
 
 		audioSource.Play();
 
-		if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out _hit, range)) {
+		if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out _hit, range, -1, QueryTriggerInteraction.Ignore)) {
 			GameObject impact = Instantiate(impactEffect, _hit.point, Quaternion.LookRotation(_hit.normal));
 			Destroy(impact, 1f);
 			GuardMotor target = _hit.transform.GetComponent<GuardMotor>();

@@ -7,6 +7,7 @@ public class GuardStateController : MonoBehaviour {
 	public StateBaseClass currentState;
 	public GameObject alertIcon;
 	public Transform pathParent;
+	public AIgun AIweapon;
 
 	private void Start() {
 

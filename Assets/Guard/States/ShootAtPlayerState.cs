@@ -15,7 +15,9 @@ public class ShootAtPlayerState : StateBaseClass {
 		motor = GetComponent<GuardMotor>();
 		gsc = GetComponent<GuardStateController>();
 		alert = gsc.alertIcon;
+
 		Instantiate(alert, transform);
+		gsc.AIweapon.engage = true;
 		Debug.Log("Pew! Pew! I'm shooting at you!");
 
 	}
@@ -30,6 +32,7 @@ public class ShootAtPlayerState : StateBaseClass {
 	}
 
 	public override void StateExit() {
+		gsc.AIweapon.engage = false;
 		Debug.Log("I can't see you anymore!");
 	}
 }
