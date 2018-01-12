@@ -56,6 +56,7 @@ public class ServerManager : MonoBehaviour {
 			return;
 		}
 
+		BinarySearch(_searchKey);
 
 		//TODO binary search.
 	}
@@ -74,7 +75,18 @@ public class ServerManager : MonoBehaviour {
 			midPos = (startPos + endPos) / 2;
 			if (formattedLinesOfIDs[midPos] < formattedKey) {
 				startPos = midPos + 1;
+			} else if (formattedLinesOfIDs[midPos] > formattedKey) {
+				endPos = midPos - 1;
 			}
+
+			if (formattedLinesOfIDs[midPos] == formattedKey) {
+				found = true;
+				Debug.Log("found file: " + linesOfIDs[midPos]);
+			}
+		}
+
+		if (found == false) {
+			//no such file.
 		}
 	}
 
