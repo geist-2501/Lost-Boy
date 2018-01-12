@@ -9,7 +9,7 @@ public class ServerManager : MonoBehaviour {
 	[SerializeField] Text listBox;
 
 	private string[] linesOfIDs = new string[100];
-	private int[] formattedLinesOfIDs = new int[100];
+	private string[] formattedLinesOfIDs = new string[100]; //without dash.
 
 	private Animator anim;
 
@@ -21,13 +21,33 @@ public class ServerManager : MonoBehaviour {
 		string filePath = "Assets/Enviroment/Server/fileIDs.txt";
 
 		linesOfIDs = File.ReadAllLines(filePath);
+
 		for (int i = 0; i < linesOfIDs.Length; i++) {
-			//from 123-4AB to 123, Just the first three ordered numbers as they are ing order.
-			int.TryParse(linesOfIDs[i].Remove(3, 4), out formattedLinesOfIDs[i]);
+			formattedLinesOfIDs[i] = linesOfIDs[i].Remove(3, 1); //removing dash.
+		}
+
+		//Bubble sort.
+		//TODO move this to game startup and order the actual textfile instead.
+		for (int outerLoop = formattedLinesOfIDs.Length - 2; outerLoop > 0; outerLoop--) {
+			for (int i = 0; i < outerLoop; i++) {
+				if (string.Compare(formattedLinesOfIDs[i], formattedLinesOfIDs[i+1]) > 0) {
+					Swap(ref formattedLinesOfIDs[i], ref formattedLinesOfIDs[i + 1]);
+					Swap(ref linesOfIDs[i], ref linesOfIDs[i + 1]);
+				}
+			}
+		}
+
+		for (int i = 0; i < linesOfIDs.Length; i++) {
 			listBox.text += linesOfIDs[i] + "\n";
 		}
 	}
-	
+
+	private void Swap <T> (ref T a, ref T b) {
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+
 	public void OnEnterSearchKey(string _searchKey) {
 
 		//Valid search key takes the form of III-ICC, where I is an integer and C is a char.
@@ -37,7 +57,6 @@ public class ServerManager : MonoBehaviour {
 			anim.SetTrigger("InvalidID");
 			return;
 		}
-
 
 		char[] letters = new char[7];
 		letters = _searchKey.ToCharArray();
@@ -56,40 +75,39 @@ public class ServerManager : MonoBehaviour {
 			return;
 		}
 
-		BinarySearch(_searchKey);
-
-		//TODO binary search.
+		BinarySearch(_searchKey.Remove(3,1));
 	}
 
 	private void BinarySearch(string _searchKey) {
-
-		int formattedKey;
-		int.TryParse(_searchKey.Remove(3, 4), out formattedKey);
 
 		bool found = false;
 		int startPos = 0;
 		int endPos = formattedLinesOfIDs.Length;
 		int midPos = 0;
 
+		//Using string.Compare(strA, strB);
+		//Less than zero, strA precedes strB in the sort order.
+		//Zero, strA occurs in the same position as strB in the sort order.
+		//Greater than zero, strA follows strB in the sort order.
+
 		while (found == false && startPos < endPos) {
 			midPos = (startPos + endPos) / 2;
-			if (formattedLinesOfIDs[midPos] < formattedKey) {
+			if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) < 0) {
 				startPos = midPos + 1;
-			} else if (formattedLinesOfIDs[midPos] > formattedKey) {
+			} else if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) > 0) {
 				endPos = midPos - 1;
 			}
 
-			if (formattedLinesOfIDs[midPos] == formattedKey) {
+			if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) == 0) {
 				found = true;
 				Debug.Log("found file: " + linesOfIDs[midPos]);
 			}
 		}
 
 		if (found == false) {
-			//no such file.
+			Debug.Log("no such file."); 
 		}
 	}
-
 
 	// Update is called once per frame
 	void Update () {
