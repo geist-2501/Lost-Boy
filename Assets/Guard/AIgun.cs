@@ -71,7 +71,7 @@ public class AIgun : MonoBehaviour {
 
 		anim.SetTrigger("Recoil");
 
-		if (Physics.Raycast(transform.position, transform.forward, out _hit, range)) {
+		if (Physics.Raycast(transform.position, transform.forward, out _hit, range, -1, QueryTriggerInteraction.Ignore)) {
 			GameObject impact = Instantiate(impactEffect, _hit.point, Quaternion.LookRotation(_hit.normal));
 			Destroy(impact, 1f);
 			PlayerController target = _hit.transform.GetComponent<PlayerController>();

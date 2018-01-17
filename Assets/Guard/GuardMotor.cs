@@ -122,5 +122,12 @@ public class GuardMotor : MonoBehaviour {
 		}
 	}
 
+	private void OnTriggerEnter(Collider other) {
+		Door interactable = other.GetComponent<Door>();
+		//Interactable will be null if there is no interactable script on the object.
+		if (interactable) {
+			interactable.ForceOpen();
+		}
+	}
 
 }

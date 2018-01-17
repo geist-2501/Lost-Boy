@@ -10,6 +10,7 @@ public class ServerManager : MonoBehaviour {
 
 	private string[] linesOfIDs = new string[100];
 	private string[] formattedLinesOfIDs = new string[100]; //without dash.
+	private int targetFileIndex = 0; //Index of 'file' that the player has to find.
 
 	private Animator anim;
 
@@ -40,6 +41,11 @@ public class ServerManager : MonoBehaviour {
 		for (int i = 0; i < linesOfIDs.Length; i++) {
 			listBox.text += linesOfIDs[i] + "\n";
 		}
+
+		targetFileIndex = Random.Range(0, linesOfIDs.Length - 1);
+		Debug.Log(targetFileIndex);
+		
+
 	}
 
 	private void Swap <T> (ref T a, ref T b) {
@@ -48,7 +54,13 @@ public class ServerManager : MonoBehaviour {
 		b = temp;
 	}
 
+	public int GetTargetFileIndex() {
+		return targetFileIndex;
+	}
+
 	public void OnEnterSearchKey(string _searchKey) {
+
+		anim.SetBool("TargetFileFound", false);
 
 		//Valid search key takes the form of III-ICC, where I is an integer and C is a char.
 
@@ -75,14 +87,30 @@ public class ServerManager : MonoBehaviour {
 			return;
 		}
 
-		BinarySearch(_searchKey.Remove(3,1));
+		int _indexOfFileSearched = BinarySearch(_searchKey.Remove(3, 1));
+
+		if (_indexOfFileSearched == -1) {
+			Debug.Log("no such file.");
+			anim.SetTrigger("NoFileFound");
+			return;
+		}
+
+		Debug.Log("found file: " + linesOfIDs[_indexOfFileSearched]);
+
+		if (_indexOfFileSearched == targetFileIndex) {
+			anim.SetBool("TargetFileFound", true);
+			Debug.Log("Tah dah! You've found the file!");
+		}
+
+
+
 	}
 
-	private void BinarySearch(string _searchKey) {
+	private int BinarySearch(string _searchKey) {
 
 		bool found = false;
 		int startPos = 0;
-		int endPos = formattedLinesOfIDs.Length;
+		int endPos = formattedLinesOfIDs.Length - 1;
 		int midPos = 0;
 
 		//Using string.Compare(strA, strB);
@@ -91,22 +119,38 @@ public class ServerManager : MonoBehaviour {
 		//Greater than zero, strA follows strB in the sort order.
 
 		while (found == false && startPos < endPos) {
+			
 			midPos = (startPos + endPos) / 2;
+
+			Debug.Log("M: " + midPos + ". S: " + startPos + ". E: " + endPos);
+
 			if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) < 0) {
 				startPos = midPos + 1;
 			} else if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) > 0) {
 				endPos = midPos - 1;
 			}
 
+			if (endPos == startPos + 1) {
+				//I.e if they are next to each other, and the middle becomes a decimal.
+				if (string.Compare(formattedLinesOfIDs[startPos], _searchKey) == 0) {
+					found = true;
+					return startPos;
+				} else if (string.Compare(formattedLinesOfIDs[endPos], _searchKey) == 0) {
+					found = true;
+					return endPos;
+				}
+			}
+			
+
 			if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) == 0) {
 				found = true;
-				Debug.Log("found file: " + linesOfIDs[midPos]);
+				return midPos;
 			}
 		}
 
-		if (found == false) {
-			Debug.Log("no such file."); 
-		}
+		//-1 is an invalid array position, and can be used to say that nothing was found.
+		return -1;
+		
 	}
 
 	// Update is called once per frame

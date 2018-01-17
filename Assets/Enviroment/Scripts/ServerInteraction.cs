@@ -27,7 +27,7 @@ public class ServerInteraction : InteractableBaseClass {
 
 		Cursor.lockState = CursorLockMode.None;
 
-		serverAnim.SetBool("isShutdown", false);
+		serverAnim.SetTrigger("StartupTrigger");
 
 	}
 
@@ -52,7 +52,7 @@ public class ServerInteraction : InteractableBaseClass {
 
 			Cursor.lockState = CursorLockMode.Locked;
 
-			serverAnim.SetBool("isShutdown", true);
+			serverAnim.SetTrigger("ShutdownTrigger");
 		}
 	}
 }

@@ -7,6 +7,7 @@ public class Door : InteractableBaseClass {
 	[SerializeField] private GameObject doorObject;
 	[SerializeField] private float openAmount;
 	[SerializeField] private float speed = 1f;
+	[SerializeField]
 
 	private Vector3 openPos;
 	private Vector3 closePos;
@@ -29,7 +30,7 @@ public class Door : InteractableBaseClass {
 
 		StopAllCoroutines();
 
-		if (isOpen) {
+		if (!isOpen) {
 			StartCoroutine(Open());
 		} else {
 			StartCoroutine(Close());
@@ -37,6 +38,11 @@ public class Door : InteractableBaseClass {
 
 		isOpen = !isOpen;
 
+	}
+
+	public void ForceOpen() {
+		StopAllCoroutines();
+		StartCoroutine(Open());
 	}
 
 	public IEnumerator Open() {
