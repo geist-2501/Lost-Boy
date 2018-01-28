@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour {
 
-	struct bar {
+	public struct bar {
 
 		private RectTransform baseBox;
 		private RectTransform fillBox;
@@ -24,19 +24,26 @@ public class HUDManager : MonoBehaviour {
 			if (_val < 0 || _val > max) {
 				return;
 			}
-			fillBox.sizeDelta = new Vector2(baseBox.rect.width * (currentValue / max), 12);
+			fillBox.sizeDelta = new Vector2(baseBox.rect.width * (currentValue / max), baseBox.rect.height);
+		}
+
+		public void show(bool _show) {
+			baseBox.gameObject.SetActive(_show);
+			fillBox.gameObject.SetActive(_show);
 		}
 
 	}
 
 	[SerializeField] private RectTransform healthBarBase;
 	[SerializeField] private RectTransform energyBarBase;
-	[SerializeField] private RectTransform interactText;
-	[SerializeField] private RectTransform ammoCounterText;
-	[SerializeField] private RectTransform aimingRect;
 
-	private bar healthBar;
-	private bar energyBar;
+	public RectTransform interactText;
+	public RectTransform ammoCounterText;
+	public RectTransform aimingRect;
+	public RectTransform decals;
+
+	public bar healthBar;
+	public bar energyBar;
 
 	// Use this for initialization
 	void Start () {
@@ -44,20 +51,13 @@ public class HUDManager : MonoBehaviour {
 		energyBar = new bar(energyBarBase, 50f);
 	}
 
-	public void UpdateHealthBar(float _val) {
-		healthBar.setValue(_val);
-	} 
-
-	public void UpdateEnergyBar(float _val) {
-		energyBar.setValue(_val);
-	}
-
-	public void SetInteractText(bool _active) {
-		interactText.gameObject.SetActive(_active);
-	}
-
-	public void SetRecticleVisibility(bool _active) {
-		aimingRect.gameObject.SetActive(_active);
+	public void SetHUDvisibility (bool _vis) {
+		interactText.gameObject.SetActive(_vis);
+		ammoCounterText.gameObject.SetActive(_vis);
+		aimingRect.gameObject.SetActive(_vis);
+		decals.gameObject.SetActive(_vis);
+		healthBar.show(_vis);
+		energyBar.show(_vis);
 	}
 
 }

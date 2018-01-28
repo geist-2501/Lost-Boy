@@ -19,8 +19,7 @@ public class ServerInteraction : InteractableBaseClass {
 		isFocus = true;
 
 		playerController.SetCanMove(false);
-		HUD.SetInteractText(false);
-		HUD.SetRecticleVisibility(false);
+		HUD.SetHUDvisibility(false);
 
 		mainCam.enabled = false;
 		subCam.enabled = true;
@@ -44,8 +43,7 @@ public class ServerInteraction : InteractableBaseClass {
 			isFocus = false;
 
 			playerController.SetCanMove(true);
-			HUD.SetInteractText(true);
-			HUD.SetRecticleVisibility(true);
+			HUD.SetHUDvisibility(true);
 
 			mainCam.enabled = true;
 			subCam.enabled = false;

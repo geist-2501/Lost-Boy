@@ -54,8 +54,8 @@ public class PlayerController : MonoBehaviour {
 	private void Update() {
 
 		//Update HUD.
-		HUD.UpdateHealthBar(health);
-		HUD.UpdateEnergyBar(energy);
+		HUD.healthBar.setValue(health);
+		HUD.energyBar.setValue(energy);
 
 		if (motor.canMove) {
 
