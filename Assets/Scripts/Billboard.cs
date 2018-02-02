@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class Billboard : MonoBehaviour {
 
-	Camera cam;
+	public Camera targetCam;
+	[SerializeField] private bool waitForTracking = false;
 
 	private void Start() {
-		cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+		if ( ! targetCam) {
+			//targetCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+			targetCam = Camera.main;
+		}
 	}
 
 	private void LateUpdate() {
-		transform.forward = -cam.transform.forward;
+		if (! waitForTracking) {
+			transform.forward = targetCam.transform.forward;
+		}
+	}
+
+	public void SetTracking (bool _setTracking) {
+		waitForTracking = _setTracking;
 	}
 }

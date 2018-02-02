@@ -7,22 +7,7 @@ using System.IO;
 public class ServerManager : MonoBehaviour {
 
 	[SerializeField] private Text listBox;
-
-	enum Node {
-		empty,
-		uncontrolled,
-		player,
-		firewall
-	}
-
-	[SerializeField] private GameObject emptyNode;
-	[SerializeField] private GameObject playerNode;
-	[SerializeField] private GameObject firewallNode;
-	[SerializeField] private Transform gridPlane;
-	[SerializeField] private float offsetAmount;
-
-
-	private Node[,] grid = new Node[5, 5];
+	[SerializeField] private HackPuzzle hackPuzzle;
 
 	private string[] linesOfIDs = new string[100];
 	private string[] formattedLinesOfIDs = new string[100]; //without dash.
@@ -60,17 +45,6 @@ public class ServerManager : MonoBehaviour {
 
 		targetFileIndex = Random.Range(0, linesOfIDs.Length - 1);
 		Debug.Log(targetFileIndex);
-
-		grid[0, 0] = Node.uncontrolled;
-		grid[4, 0] = Node.uncontrolled;
-		grid[0, 4] = Node.uncontrolled;
-		grid[4, 4] = Node.uncontrolled;
-
-		grid[0, 2] = Node.firewall;
-		grid[1, 2] = Node.uncontrolled;
-		grid[2, 2] = Node.uncontrolled;
-		grid[3, 2] = Node.uncontrolled;
-		grid[4, 2] = Node.player;
 	}
 
 	private void Swap <T> (ref T a, ref T b) {
@@ -178,28 +152,10 @@ public class ServerManager : MonoBehaviour {
 		
 	}
 
-	private void InstansiateGrid() {
-		for (int y = 0; y < 5; y++) {
-			for (int x = 0; x < 5; x++) {
-				Vector3 _offset = new Vector3((x - 2.5f) * offsetAmount, 0.2f, (2.5f - y) * offsetAmount);
-				_offset += gridPlane.transform.position;
+	//Just lets the animator call the minigame.
+	void BeginHack() {
 
-				switch (grid[y,x]) {
-					case Node.uncontrolled:
-						Instantiate(emptyNode, _offset, Quaternion.identity, gridPlane);
-						break;
-					case Node.player:
-						Instantiate(playerNode, _offset, Quaternion.identity, gridPlane);
-						break;
-					case Node.firewall:
-						Instantiate(firewallNode, _offset, Quaternion.identity, gridPlane);
-						break;
-					default:
-						break;
-				}
-			}
-		}
-		
+		hackPuzzle.CreateGrid();
 	}
 
 	// Update is called once per frame
