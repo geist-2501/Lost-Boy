@@ -29,6 +29,7 @@ public class HackPuzzle : MonoBehaviour
         public GameObject gameObj;
     }
 
+    //Data structure to contain information for drawing lines between nodes.
     struct Pair
     {
         public Node a;
@@ -39,8 +40,7 @@ public class HackPuzzle : MonoBehaviour
     //For keeping track of what nodes are connected to what.
     private List<Pair> NodePairs = new List<Pair>();
 
-
-
+    //The types of node that can exist on the grid, except Null, its just empty.
     enum NodeTypes { Null, Firewall, Controlled, Uncontrolled, AccessPoint };
 
     private Node[,] nodeOnGrid = new Node[5, 5];
@@ -62,14 +62,14 @@ public class HackPuzzle : MonoBehaviour
         #region input
         //This is one ugly controller.
         //TODO find a better way to write this for christ sake.
-        if (gridActive)
+        if (gridActive) //Don't handle input if it ain't.
         {
-
+            //If the user presses space and is on a node, capture it.
             if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
             {
                 //Capture node
             }
-
+            //First condition is which key got pressed, second is whether its inside the array.
             if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
             {
                 selectedX++;
@@ -89,6 +89,7 @@ public class HackPuzzle : MonoBehaviour
 
             }
 
+            //Update the cursor position.
             cursorInstance.transform.position = nodeOnGrid[selectedX, selectedY].location;
         }
 
@@ -97,23 +98,43 @@ public class HackPuzzle : MonoBehaviour
 
     private void ConnectNodes(Node a, Node b)
     {
+        //Keep track of connections.
         Pair _newPair = new Pair();
         _newPair.a = a;
         _newPair.b = b;
 
+        //Create an instance of a line.
         Vector3 _lineSpawnPos = new Vector3(0f, 0.05f, 0f);
         _newPair.line = Instantiate(linePrefab, _lineSpawnPos, Quaternion.identity, transform).GetComponent<LineRenderer>();
 
+        //Match the beginning and ends of the line to the position of the two nodes.
         Vector3[] _pos = new Vector3[2];
-        _pos[0] = a.location;
-        _pos[1] = b.location;
-
+        _pos[0] = a.location; //Line beginning.
+        _pos[1] = b.location; //Line end.
 
         _newPair.line.SetPositions(_pos);
 
+        //And the new connection to a list, so they can be tracked (and removed if nessesary).
         NodePairs.Add(_newPair);
     }
 
+    private void IsConnected(Node a, Node b)
+    {
+        for (int i = 0; i < NodePairs.Count; i++)
+        {
+            if ((NodePairs[i].a.Equals(a) && NodePairs[i].b.Equals(b)) || (NodePairs[i].a.Equals(b) && NodePairs[i].b.Equals(a)))
+            {
+                Debug.Log("Capturing node");
+            }
+            else
+            {
+                Debug.Log("Nodes aren't connected");
+            }
+        }
+    }
+
+
+    //Gets called by whatever wants to start the hacking game. 
     public void CreateGrid()
     {
         gridActive = true;
@@ -121,9 +142,12 @@ public class HackPuzzle : MonoBehaviour
         {
             for (int X = 0; X < 5; X++)
             {
-                Vector3 _posToSpawn = new Vector3(-Y + 2, 0f, X - 2) * 0.15f;
+                //Create offsets so that the nodes are spawned relative to the script object.
+                Vector3 _posToSpawn = new Vector3(-Y + 2, 0f, X - 2) * 0.15f; //the scalar is just making the offset smaller.
                 Vector3 _offset = transform.position;
                 Vector3 _offsetPosToSpawn = _offset + _posToSpawn;
+
+                //Create the node based on what the array says.
                 switch (nodeOnGrid[X, Y].type)
                 {
                     case NodeTypes.Firewall:
@@ -144,12 +168,17 @@ public class HackPuzzle : MonoBehaviour
                 }
             }
         }
+
+        //create and instance of the cursor.
         cursorInstance = Instantiate(cursorPrefab, nodeOnGrid[selectedX, selectedY].location, Quaternion.identity) as GameObject;
 
+
+        //Here is where nodes are connected together.
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[4, 4]);
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
         ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
 
+        IsConnected(nodeOnGrid[2, 2], nodeOnGrid[4, 0]);
 
     }
 
@@ -158,7 +187,5 @@ public class HackPuzzle : MonoBehaviour
         nodeOnGrid[x, y].gameObj = Instantiate(_node, _pos, Quaternion.identity, transform);
         nodeOnGrid[x, y].location = _pos;
     }
-
-    // Update is called once per frame
 
 }
