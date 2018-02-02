@@ -5,22 +5,21 @@ using UnityEngine;
 public class HackPuzzle : MonoBehaviour
 {
 
-    [SerializeField]
-    private GameObject firewallNode;
-    [SerializeField]
-    private GameObject controlledNode;
-    [SerializeField]
-    private GameObject uncontrolledNode;
-    [SerializeField]
-    private GameObject accessPointNode;
-    [SerializeField]
-    private GameObject cursorPrefab;
+    [SerializeField] private GameObject firewallNode;
+    [SerializeField] private GameObject controlledNode;
+    [SerializeField] private GameObject uncontrolledNode;
+    [SerializeField] private GameObject accessPointNode;
+    [SerializeField] private GameObject cursorPrefab;
+    [SerializeField] private GameObject linePrefab;
+
     private GameObject cursorInstance;
 
     private bool gridActive = false;
 
     private int selectedX = 4;
     private int selectedY = 0;
+
+
 
     //C# doesn't support records yet, so a struct can provide the same functionality.
     struct Node
@@ -30,6 +29,18 @@ public class HackPuzzle : MonoBehaviour
         public GameObject gameObj;
     }
 
+    struct Pair
+    {
+        public Node a;
+        public Node b;
+        public LineRenderer line;
+    }
+
+    //For keeping track of what nodes are connected to what.
+    private List<Pair> NodePairs = new List<Pair>();
+
+
+
     enum NodeTypes { Null, Firewall, Controlled, Uncontrolled, AccessPoint };
 
     private Node[,] nodeOnGrid = new Node[5, 5];
@@ -37,15 +48,70 @@ public class HackPuzzle : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        nodeOnGrid[0, 0].type = NodeTypes.AccessPoint;
-        nodeOnGrid[0, 4].type = NodeTypes.Uncontrolled;
+        //Layout grid.
+        nodeOnGrid[0, 0].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[0, 4].type = NodeTypes.AccessPoint;
         nodeOnGrid[4, 0].type = NodeTypes.Controlled;
         nodeOnGrid[4, 4].type = NodeTypes.Firewall;
 
-        nodeOnGrid[3, 0].type = NodeTypes.Uncontrolled;
-        nodeOnGrid[2, 0].type = NodeTypes.Uncontrolled;
-        nodeOnGrid[1, 0].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[2, 2].type = NodeTypes.Uncontrolled;
+    }
 
+    void Update()
+    {
+        #region input
+        //This is one ugly controller.
+        //TODO find a better way to write this for christ sake.
+        if (gridActive)
+        {
+
+            if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
+            {
+                //Capture node
+            }
+
+            if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
+            {
+                selectedX++;
+            }
+            else if (Input.GetKeyDown(KeyCode.A) && selectedX - 1 != -1)
+            {
+                selectedX--;
+            }
+            else if (Input.GetKeyDown(KeyCode.W) && selectedY + 1 != 5)
+            {
+                selectedY++;
+
+            }
+            else if (Input.GetKeyDown(KeyCode.S) && selectedY - 1 != -1)
+            {
+                selectedY--;
+
+            }
+
+            cursorInstance.transform.position = nodeOnGrid[selectedX, selectedY].location;
+        }
+
+        #endregion
+    }
+
+    private void ConnectNodes(Node a, Node b)
+    {
+        Pair _newPair = new Pair();
+        _newPair.a = a;
+        _newPair.b = b;
+
+        Vector3 _lineSpawnPos = new Vector3(0f, 0.05f, 0f);
+        _newPair.line = Instantiate(linePrefab, _lineSpawnPos, Quaternion.identity, transform).GetComponent<LineRenderer>();
+
+        Vector3[] _pos = new Vector3[2];
+        _pos[0] = a.location;
+        _pos[1] = b.location;
+
+
+        _newPair.line.SetPositions(_pos);
+
+        NodePairs.Add(_newPair);
     }
 
     public void CreateGrid()
@@ -80,58 +146,19 @@ public class HackPuzzle : MonoBehaviour
         }
         cursorInstance = Instantiate(cursorPrefab, nodeOnGrid[selectedX, selectedY].location, Quaternion.identity) as GameObject;
 
+        ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[4, 4]);
+        ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
+        ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
+
 
     }
 
-    void CreateNode(GameObject _node, Vector3 _pos, int x, int y)
+    private void CreateNode(GameObject _node, Vector3 _pos, int x, int y)
     {
-        nodeOnGrid[x, y].gameObj = Instantiate(_node, _pos, Quaternion.LookRotation(-transform.right, transform.up), transform);
+        nodeOnGrid[x, y].gameObj = Instantiate(_node, _pos, Quaternion.identity, transform);
         nodeOnGrid[x, y].location = _pos;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //This is one ugly controller.
-        //TODO find a better way to write this for christ sake.
-        if (gridActive)
-        {
 
-            if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
-            {
-				//Capture node
-            }
-
-            if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
-            {
-                if (nodeOnGrid[selectedX + 1, selectedY].type != NodeTypes.Null)
-                {
-                    selectedX++;
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.A) && selectedX - 1 != -1)
-            {
-                if (nodeOnGrid[selectedX - 1, selectedY].type != NodeTypes.Null)
-                {
-                    selectedX--;
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.W) && selectedY + 1 != 5)
-            {
-                if (nodeOnGrid[selectedX, selectedY + 1].type != NodeTypes.Null)
-                {
-                    selectedY++;
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.S) && selectedY - 1 != -1)
-            {
-                if (nodeOnGrid[selectedX, selectedY - 1].type != NodeTypes.Null)
-                {
-                    selectedY--;
-                }
-            }
-
-            cursorInstance.transform.position = nodeOnGrid[selectedX, selectedY].location;
-        }
-    }
 }
