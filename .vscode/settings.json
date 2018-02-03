@@ -1,7 +1,6 @@
 {
     "files.exclude":
     {
-
         "**/*.*.meta": true,
         "**/Library": true,
         "**/ProjectSettings": true,

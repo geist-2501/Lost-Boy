@@ -67,7 +67,11 @@ public class HackPuzzle : MonoBehaviour
             //If the user presses space and is on a node, capture it.
             if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
             {
-                //Capture node
+                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selectedX,selectedY], NodeTypes.Controlled);
+                if (_nodesConnected.Count > 0) //I.e. if a controlled node is connected to the selected uncontrolled node.
+                {
+                    Debug.Log("Capturing!");
+                }
             }
             //First condition is which key got pressed, second is whether its inside the array.
             if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
@@ -96,6 +100,9 @@ public class HackPuzzle : MonoBehaviour
         #endregion
     }
 
+
+    #region NodeFunctions
+    //This function connects node a and node b together.
     private void ConnectNodes(Node a, Node b)
     {
         //Keep track of connections.
@@ -118,20 +125,45 @@ public class HackPuzzle : MonoBehaviour
         NodePairs.Add(_newPair);
     }
 
-    private void IsConnected(Node a, Node b)
+    //Function determines whether node a is connected to node b.
+    private bool IsConnected(Node a, Node b)
     {
         for (int i = 0; i < NodePairs.Count; i++)
         {
             if ((NodePairs[i].a.Equals(a) && NodePairs[i].b.Equals(b)) || (NodePairs[i].a.Equals(b) && NodePairs[i].b.Equals(a)))
             {
-                Debug.Log("Capturing node");
-            }
-            else
-            {
-                Debug.Log("Nodes aren't connected");
+                return true;
             }
         }
+        return false;
     }
+
+    //Function returns a list of nodes connected to the node passed in.
+    //It will only consider nodes of the type passed in, unless thats null, then all are considered.
+    private List<Node> GetConnectedNodes(Node node, NodeTypes type){
+
+        List<Node> _connected = new List<Node>();
+
+        for (int Y = 0; Y < 5; Y++)
+        {
+            for (int X = 0; X < 5; X++)
+            {
+                if (IsConnected(node, nodeOnGrid[X,Y]) && type == NodeTypes.Null)
+                {
+                    _connected.Add(nodeOnGrid[X,Y]);
+                    Debug.Log("Connected Node (any)");
+                }
+                else if (IsConnected(node, nodeOnGrid[X,Y]) && nodeOnGrid[X,Y].type == type)
+                {
+                    _connected.Add(nodeOnGrid[X,Y]);
+                    Debug.Log("Connected Node (" + type + ")");
+                }
+            }
+        }
+
+        return _connected;
+    }
+    #endregion
 
 
     //Gets called by whatever wants to start the hacking game. 
@@ -178,7 +210,8 @@ public class HackPuzzle : MonoBehaviour
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
         ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
 
-        IsConnected(nodeOnGrid[2, 2], nodeOnGrid[4, 0]);
+        GetConnectedNodes(nodeOnGrid[2,2], NodeTypes.Null);;
+        GetConnectedNodes(nodeOnGrid[2,2], NodeTypes.Controlled);
 
     }
 
