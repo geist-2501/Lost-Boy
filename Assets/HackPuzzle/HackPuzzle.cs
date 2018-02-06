@@ -27,6 +27,13 @@ public class HackPuzzle : MonoBehaviour
         public NodeTypes type;
         public Vector3 location;
         public GameObject gameObj;
+
+        public void ChangeType(NodeTypes _type){
+            Destroy(gameObj);
+            type = _type;
+            
+        } 
+
     }
 
     //Data structure to contain information for drawing lines between nodes.
