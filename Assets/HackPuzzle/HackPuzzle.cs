@@ -27,17 +27,11 @@ public class HackPuzzle : MonoBehaviour
         public NodeTypes type;
         public Vector3 location;
         public GameObject gameObj;
-
-        public void ChangeType(NodeTypes _type){
-            Destroy(gameObj);
-            type = _type;
-            
-        } 
-
     }
 
+
     //Data structure to contain information for drawing lines between nodes.
-    struct Pair
+    class Pair
     {
         public Node a;
         public Node b;
@@ -74,10 +68,12 @@ public class HackPuzzle : MonoBehaviour
             //If the user presses space and is on a node, capture it.
             if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
             {
-                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selectedX,selectedY], NodeTypes.Controlled);
+                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
+                Debug.Log(_nodesConnected.Count);
                 if (_nodesConnected.Count > 0) //I.e. if a controlled node is connected to the selected uncontrolled node.
                 {
                     Debug.Log("Capturing!");
+                    ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
                 }
             }
             //First condition is which key got pressed, second is whether its inside the array.
@@ -114,6 +110,7 @@ public class HackPuzzle : MonoBehaviour
     {
         //Keep track of connections.
         Pair _newPair = new Pair();
+
         _newPair.a = a;
         _newPair.b = b;
 
@@ -147,7 +144,8 @@ public class HackPuzzle : MonoBehaviour
 
     //Function returns a list of nodes connected to the node passed in.
     //It will only consider nodes of the type passed in, unless thats null, then all are considered.
-    private List<Node> GetConnectedNodes(Node node, NodeTypes type){
+    private List<Node> GetConnectedNodes(Node node, NodeTypes type)
+    {
 
         List<Node> _connected = new List<Node>();
 
@@ -155,20 +153,76 @@ public class HackPuzzle : MonoBehaviour
         {
             for (int X = 0; X < 5; X++)
             {
-                if (IsConnected(node, nodeOnGrid[X,Y]) && type == NodeTypes.Null)
+                if (IsConnected(node, nodeOnGrid[X, Y]) && type == NodeTypes.Null)
                 {
-                    _connected.Add(nodeOnGrid[X,Y]);
+                    _connected.Add(nodeOnGrid[X, Y]);
                     Debug.Log("Connected Node (any)");
                 }
-                else if (IsConnected(node, nodeOnGrid[X,Y]) && nodeOnGrid[X,Y].type == type)
+                else if (IsConnected(node, nodeOnGrid[X, Y]) && nodeOnGrid[X, Y].type == type)
                 {
-                    _connected.Add(nodeOnGrid[X,Y]);
+                    _connected.Add(nodeOnGrid[X, Y]);
                     Debug.Log("Connected Node (" + type + ")");
                 }
             }
         }
 
         return _connected;
+    }
+
+
+    //Create the gameObject for the node.
+    private GameObject CreateNodeGameObj(NodeTypes _type, Vector3 _pos)
+    {
+
+        GameObject _newNode = null;
+
+        //Match prefab to the type passed in.
+        switch (_type)
+        {
+            case NodeTypes.Firewall:
+                _newNode = Instantiate(firewallNode, _pos, Quaternion.identity, transform);
+                break;
+            case NodeTypes.Uncontrolled:
+                _newNode = Instantiate(uncontrolledNode, _pos, Quaternion.identity, transform);
+                break;
+            case NodeTypes.Controlled:
+                _newNode = Instantiate(controlledNode, _pos, Quaternion.identity, transform);
+                break;
+            case NodeTypes.AccessPoint:
+                _newNode = Instantiate(accessPointNode, _pos, Quaternion.identity, transform);
+                break;
+            case NodeTypes.Null:
+                _newNode = null;
+                break;
+        }
+
+        return _newNode;
+    }
+
+
+    //Quick little function for neatly changing the type of a node, and updating its gameObj as well.
+    private void ChangeNodeType(ref Node _a, NodeTypes _type)
+    {
+        GameObject _newNodeObj = CreateNodeGameObj(_type, _a.location);
+
+        //Look through all pairs and update them as nessesary.
+        for (int i = 0; i < NodePairs.Count; i++)
+        {
+            if (NodePairs[i].a.Equals(_a))
+            {
+                NodePairs[i].a.type = _type;
+                NodePairs[i].a.gameObj = _newNodeObj;
+            } 
+            else if (NodePairs[i].b.Equals(_a)) 
+            {
+                NodePairs[i].b.type = _type;
+                NodePairs[i].b.gameObj = _newNodeObj;
+            }
+        }
+
+        _a.type = _type;
+        Destroy(_a.gameObj);
+        _a.gameObj = _newNodeObj;
     }
     #endregion
 
@@ -187,24 +241,8 @@ public class HackPuzzle : MonoBehaviour
                 Vector3 _offsetPosToSpawn = _offset + _posToSpawn;
 
                 //Create the node based on what the array says.
-                switch (nodeOnGrid[X, Y].type)
-                {
-                    case NodeTypes.Firewall:
-                        CreateNode(firewallNode, _offsetPosToSpawn, X, Y);
-                        break;
-                    case NodeTypes.Uncontrolled:
-                        CreateNode(uncontrolledNode, _offsetPosToSpawn, X, Y);
-                        break;
-                    case NodeTypes.Controlled:
-                        CreateNode(controlledNode, _offsetPosToSpawn, X, Y);
-                        break;
-                    case NodeTypes.AccessPoint:
-                        CreateNode(accessPointNode, _offsetPosToSpawn, X, Y);
-                        break;
-                    case NodeTypes.Null:
-                        nodeOnGrid[X, Y].location = _offsetPosToSpawn;
-                        break;
-                }
+                nodeOnGrid[X, Y].gameObj = CreateNodeGameObj(nodeOnGrid[X, Y].type, _offsetPosToSpawn);
+                nodeOnGrid[X, Y].location = _offsetPosToSpawn;
             }
         }
 
@@ -217,15 +255,8 @@ public class HackPuzzle : MonoBehaviour
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
         ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
 
-        GetConnectedNodes(nodeOnGrid[2,2], NodeTypes.Null);;
-        GetConnectedNodes(nodeOnGrid[2,2], NodeTypes.Controlled);
-
     }
 
-    private void CreateNode(GameObject _node, Vector3 _pos, int x, int y)
-    {
-        nodeOnGrid[x, y].gameObj = Instantiate(_node, _pos, Quaternion.identity, transform);
-        nodeOnGrid[x, y].location = _pos;
-    }
+
 
 }
