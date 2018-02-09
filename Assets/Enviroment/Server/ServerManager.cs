@@ -154,8 +154,12 @@ public class ServerManager : MonoBehaviour {
 
 	//Just lets the animator call the minigame.
 	void BeginHack() {
-
 		hackPuzzle.CreateGrid();
+	}
+
+	//Hack puzzle calls this once its done.
+	public void EndHack(bool _wasSuccessful){
+		
 	}
 
 	// Update is called once per frame

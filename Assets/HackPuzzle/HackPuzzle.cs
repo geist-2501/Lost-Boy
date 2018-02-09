@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HackPuzzle : MonoBehaviour
 {
+    [Range(1, 100)]
+    [SerializeField]
+    private float captureSpeed;
 
     [SerializeField] private GameObject firewallNode;
     [SerializeField] private GameObject controlledNode;
@@ -11,10 +14,14 @@ public class HackPuzzle : MonoBehaviour
     [SerializeField] private GameObject accessPointNode;
     [SerializeField] private GameObject cursorPrefab;
     [SerializeField] private GameObject linePrefab;
+    [SerializeField] private GameObject textPercentage;
+
+    [SerializeField] ServerManager serverManager;
 
     private GameObject cursorInstance;
 
     private bool gridActive = false;
+    private bool isCapturing = false;
 
     private int selectedX = 4;
     private int selectedY = 0;
@@ -49,6 +56,7 @@ public class HackPuzzle : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
         //Layout grid.
         nodeOnGrid[0, 0].type = NodeTypes.Uncontrolled;
         nodeOnGrid[0, 4].type = NodeTypes.AccessPoint;
@@ -63,7 +71,7 @@ public class HackPuzzle : MonoBehaviour
         #region input
         //This is one ugly controller.
         //TODO find a better way to write this for christ sake.
-        if (gridActive) //Don't handle input if it ain't.
+        if (gridActive && !isCapturing) //Don't handle input if it ain't.
         {
             //If the user presses space and is on a node, capture it.
             if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
@@ -73,8 +81,15 @@ public class HackPuzzle : MonoBehaviour
                 if (_nodesConnected.Count > 0) //I.e. if a controlled node is connected to the selected uncontrolled node.
                 {
                     Debug.Log("Capturing!");
-                    ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
+                    StartCoroutine(CaptureNode(nodeOnGrid[selectedX, selectedY]));
+
                 }
+            }
+            else if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.AccessPoint)
+            {
+                //TODO win condition
+                CleanUpAndClose();
+
             }
             //First condition is which key got pressed, second is whether its inside the array.
             if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
@@ -93,7 +108,6 @@ public class HackPuzzle : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.S) && selectedY - 1 != -1)
             {
                 selectedY--;
-
             }
 
             //Update the cursor position.
@@ -101,6 +115,50 @@ public class HackPuzzle : MonoBehaviour
         }
 
         #endregion
+    }
+
+    //Does exactly what you think it does.
+    private void CleanUpAndClose(){
+
+        //Destory all children.
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        Destroy(cursorInstance);
+
+        
+
+    }
+
+
+    //Co-routine that creates a textbox and counts up to 100%, then captures the node.
+    //Speed of capture can be adjusted by changing the value of captureSpeed.
+    IEnumerator CaptureNode(Node a)
+    {
+        Vector3 _spawnWithOffset = new Vector3(a.location.x, a.location.y + 0.2f, a.location.z);
+        GameObject _textGameObj = Instantiate(textPercentage, _spawnWithOffset, Quaternion.identity, transform);
+        TextMesh _textMesh = _textGameObj.GetComponentInChildren<TextMesh>();
+
+        //Prevent player from inputting anything until process is done.
+        isCapturing = true;
+
+        float _progress = 0f;
+        while (_progress < 100)
+        {
+            _progress += (captureSpeed * Time.deltaTime);
+            _textMesh.text = Mathf.RoundToInt(_progress).ToString();
+            yield return null;
+        }
+        //Destroy text afterwards.
+        Destroy(_textGameObj);
+        //Finally capture the node.
+        ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
+        //Give the player back control.
+        isCapturing = false;
+
+        yield return null;
     }
 
 
@@ -212,8 +270,8 @@ public class HackPuzzle : MonoBehaviour
             {
                 NodePairs[i].a.type = _type;
                 NodePairs[i].a.gameObj = _newNodeObj;
-            } 
-            else if (NodePairs[i].b.Equals(_a)) 
+            }
+            else if (NodePairs[i].b.Equals(_a))
             {
                 NodePairs[i].b.type = _type;
                 NodePairs[i].b.gameObj = _newNodeObj;
@@ -254,6 +312,8 @@ public class HackPuzzle : MonoBehaviour
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[4, 4]);
         ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
         ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
+        ConnectNodes(nodeOnGrid[0, 0], nodeOnGrid[2, 2]);
+
 
     }
 
