@@ -159,7 +159,10 @@ public class ServerManager : MonoBehaviour {
 
 	//Hack puzzle calls this once its done.
 	public void EndHack(bool _wasSuccessful){
-		
+		if (_wasSuccessful)
+		{
+			anim.SetTrigger("HackSuccess");
+		}
 	}
 
 	// Update is called once per frame

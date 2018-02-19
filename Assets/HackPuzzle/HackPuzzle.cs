@@ -6,7 +6,11 @@ public class HackPuzzle : MonoBehaviour
 {
     [Range(1, 100)]
     [SerializeField]
-    private float captureSpeed;
+    private float playerCaptureSpeed;
+
+    [Range(1, 100)]
+    [SerializeField]
+    private float aiCaptureSpeed;
 
     [SerializeField] private GameObject firewallNode;
     [SerializeField] private GameObject controlledNode;
@@ -15,6 +19,7 @@ public class HackPuzzle : MonoBehaviour
     [SerializeField] private GameObject cursorPrefab;
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject textPercentage;
+    [SerializeField] private GameObject successfulText;
 
     [SerializeField] ServerManager serverManager;
 
@@ -25,6 +30,10 @@ public class HackPuzzle : MonoBehaviour
 
     private int selectedX = 4;
     private int selectedY = 0;
+
+    private int aiX = 0;
+    private int aiY = 0;
+    private Random patheticAIbrain = new Random();
 
 
 
@@ -58,12 +67,19 @@ public class HackPuzzle : MonoBehaviour
     {
 
         //Layout grid.
-        nodeOnGrid[0, 0].type = NodeTypes.Uncontrolled;
-        nodeOnGrid[0, 4].type = NodeTypes.AccessPoint;
         nodeOnGrid[4, 0].type = NodeTypes.Controlled;
+        nodeOnGrid[2, 0].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[0, 2].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[1, 3].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[2, 3].type = NodeTypes.Uncontrolled;
         nodeOnGrid[4, 4].type = NodeTypes.Firewall;
+        nodeOnGrid[3, 4].type = NodeTypes.Uncontrolled;
+        nodeOnGrid[0, 4].type = NodeTypes.AccessPoint;
 
-        nodeOnGrid[2, 2].type = NodeTypes.Uncontrolled;
+        //Make sure the AI X and Y are the same as the first firewall point.
+        aiX = 4;
+        aiY = 4;
+
     }
 
     void Update()
@@ -88,6 +104,14 @@ public class HackPuzzle : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.AccessPoint)
             {
                 //TODO win condition
+
+                Vector3 _spawnOffset = new Vector3(0f, 0.2f, 0f);
+                _spawnOffset += transform.position;
+                GameObject _successText = Instantiate(successfulText, _spawnOffset, Quaternion.identity);
+                Destroy(_successText, 1f); //Destroy in one second.
+
+                serverManager.EndHack(true);
+
                 CleanUpAndClose();
 
             }
@@ -118,7 +142,10 @@ public class HackPuzzle : MonoBehaviour
     }
 
     //Does exactly what you think it does.
-    private void CleanUpAndClose(){
+    private void CleanUpAndClose()
+    {
+
+        gridActive = false;
 
         //Destory all children.
         foreach (Transform child in transform)
@@ -128,7 +155,7 @@ public class HackPuzzle : MonoBehaviour
 
         Destroy(cursorInstance);
 
-        
+
 
     }
 
@@ -147,8 +174,8 @@ public class HackPuzzle : MonoBehaviour
         float _progress = 0f;
         while (_progress < 100)
         {
-            _progress += (captureSpeed * Time.deltaTime);
-            _textMesh.text = Mathf.RoundToInt(_progress).ToString();
+            _progress += (playerCaptureSpeed * Time.deltaTime);
+            _textMesh.text = Mathf.RoundToInt(_progress).ToString() + "%";
             yield return null;
         }
         //Destroy text afterwards.
@@ -309,13 +336,70 @@ public class HackPuzzle : MonoBehaviour
 
 
         //Here is where nodes are connected together.
-        ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[4, 4]);
-        ConnectNodes(nodeOnGrid[0, 4], nodeOnGrid[2, 2]);
-        ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 2]);
-        ConnectNodes(nodeOnGrid[0, 0], nodeOnGrid[2, 2]);
+        //I should really make an interface for doing this, but I have other priorities.
+        ConnectNodes(nodeOnGrid[4, 0], nodeOnGrid[2, 0]);
+        ConnectNodes(nodeOnGrid[2, 0], nodeOnGrid[0, 2]);
+        ConnectNodes(nodeOnGrid[0, 2], nodeOnGrid[0, 4]);
+        ConnectNodes(nodeOnGrid[4, 4], nodeOnGrid[3, 4]);
+        ConnectNodes(nodeOnGrid[3, 4], nodeOnGrid[2, 3]);
+        ConnectNodes(nodeOnGrid[2, 3], nodeOnGrid[1, 3]);
+        ConnectNodes(nodeOnGrid[2, 3], nodeOnGrid[2, 0]);
+        ConnectNodes(nodeOnGrid[1, 3], nodeOnGrid[0, 2]);
 
+        StartCoroutine(firewallAI());
 
     }
+
+    #region firewallAI
+
+    IEnumerator firewallAI()
+    {
+        while (gridActive)
+        {
+            List<Node> _localNodes = new List<Node>();
+            _localNodes = GetConnectedNodes(nodeOnGrid[aiX, aiY], NodeTypes.Null);
+            int _randomSelection = Random.Range(0, _localNodes.Count - 1);
+
+            foreach (Node n in nodeOnGrid)
+            {
+                // if (n.Equals(_localNodes.))
+                // {
+                    
+                // }
+            }
+
+            StartCoroutine(AICaptureNode(_localNodes[_randomSelection]));
+
+            yield return new WaitForSeconds(2f);
+        }
+
+        yield return null;
+
+    }
+
+    IEnumerator AICaptureNode(Node a)
+    {
+        Vector3 _spawnWithOffset = new Vector3(a.location.x, a.location.y + 0.2f, a.location.z);
+        GameObject _textGameObj = Instantiate(textPercentage, _spawnWithOffset, Quaternion.identity, transform);
+        TextMesh _textMesh = _textGameObj.GetComponentInChildren<TextMesh>();
+
+        float _progress = 0f;
+        while (_progress < 100)
+        {
+            _progress += (aiCaptureSpeed * Time.deltaTime);
+            _textMesh.text = Mathf.RoundToInt(_progress).ToString() + "%";
+            yield return null;
+        }
+        //Destroy text afterwards.
+        Destroy(_textGameObj);
+        //Finally capture the node.
+        ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Firewall);
+        //Give the player back control.
+
+        yield return null;
+    }
+
+    #endregion
 
 
 
