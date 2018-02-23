@@ -13,6 +13,7 @@ public class ServerManager : MonoBehaviour {
 	private string[] formattedLinesOfIDs = new string[100]; //without dash.
 	private int targetFileIndex = 0; //Index of 'file' that the player has to find.
 
+	[SerializeField] private ServerInteraction si;
 	private Animator anim;
 
 	// Use this for initialization
@@ -124,9 +125,9 @@ public class ServerManager : MonoBehaviour {
 			Debug.Log("M: " + midPos + ". S: " + startPos + ". E: " + endPos);
 
 			if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) < 0) {
-				startPos = midPos + 1;
+				startPos = midPos;
 			} else if (string.Compare(formattedLinesOfIDs[midPos], _searchKey) > 0) {
-				endPos = midPos - 1;
+				endPos = midPos;
 			}
 
 			if (endPos == startPos + 1) {
@@ -162,6 +163,11 @@ public class ServerManager : MonoBehaviour {
 		if (_wasSuccessful)
 		{
 			anim.SetTrigger("HackSuccess");
+		}
+		else
+		{
+			Debug.Log("haha you lost!");
+			si.ExitServer();
 		}
 	}
 

@@ -27,13 +27,16 @@ public class HackPuzzle : MonoBehaviour
 
     private bool gridActive = false;
     private bool isCapturing = false;
+    private bool playerLost = false;
 
-    private int selectedX = 4;
-    private int selectedY = 0;
+    private int selX = 4;
+    private int selY = 0;
+    private Node playerTargetNode;
 
     private int aiX = 0;
     private int aiY = 0;
     private Random patheticAIbrain = new Random();
+    private Node aiTargetNode;
 
 
 
@@ -43,6 +46,9 @@ public class HackPuzzle : MonoBehaviour
         public NodeTypes type;
         public Vector3 location;
         public GameObject gameObj;
+        public NodeStatus status;
+        public int x;
+        public int y;
     }
 
 
@@ -59,6 +65,8 @@ public class HackPuzzle : MonoBehaviour
 
     //The types of node that can exist on the grid, except Null, its just empty.
     enum NodeTypes { Null, Firewall, Controlled, Uncontrolled, AccessPoint };
+
+    enum NodeStatus { Idle, AIcapturing, USERcapturing };
 
     private Node[,] nodeOnGrid = new Node[5, 5];
 
@@ -90,52 +98,60 @@ public class HackPuzzle : MonoBehaviour
         if (gridActive && !isCapturing) //Don't handle input if it ain't.
         {
             //If the user presses space and is on a node, capture it.
-            if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.Uncontrolled)
+            if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selX, selY].type == NodeTypes.Uncontrolled)
             {
-                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
-                Debug.Log(_nodesConnected.Count);
+                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selX, selY], NodeTypes.Controlled);
                 if (_nodesConnected.Count > 0) //I.e. if a controlled node is connected to the selected uncontrolled node.
                 {
-                    Debug.Log("Capturing!");
-                    StartCoroutine(CaptureNode(nodeOnGrid[selectedX, selectedY]));
+                    playerTargetNode = nodeOnGrid[selX, selY];
+                    if (playerTargetNode.Equals(aiTargetNode))
+                    {
+                        //TODO error beep.
+                        Debug.Log("errorbeep");
+                    }
+                    else
+                    {
+                        StartCoroutine(CaptureNode(nodeOnGrid[selX, selY]));
+                    }
 
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selectedX, selectedY].type == NodeTypes.AccessPoint)
+            else if (Input.GetKeyDown(KeyCode.Space) && nodeOnGrid[selX, selY].type == NodeTypes.AccessPoint)
             {
-                //TODO win condition
+                List<Node> _nodesConnected = GetConnectedNodes(nodeOnGrid[selX, selY], NodeTypes.Controlled);
+                if (_nodesConnected.Count > 0)
+                {
+                    Vector3 _spawnOffset = new Vector3(0f, 0.2f, 0f);
+                    _spawnOffset += transform.position;
+                    GameObject _successText = Instantiate(successfulText, _spawnOffset, Quaternion.identity);
+                    Destroy(_successText, 1f); //Destroy in one second.
 
-                Vector3 _spawnOffset = new Vector3(0f, 0.2f, 0f);
-                _spawnOffset += transform.position;
-                GameObject _successText = Instantiate(successfulText, _spawnOffset, Quaternion.identity);
-                Destroy(_successText, 1f); //Destroy in one second.
+                    serverManager.EndHack(true);
 
-                serverManager.EndHack(true);
-
-                CleanUpAndClose();
-
+                    CleanUpAndClose();
+                }
             }
             //First condition is which key got pressed, second is whether its inside the array.
-            if (Input.GetKeyDown(KeyCode.D) && selectedX + 1 != 5)
+            if (Input.GetKeyDown(KeyCode.D) && selX + 1 != 5)
             {
-                selectedX++;
+                selX++;
             }
-            else if (Input.GetKeyDown(KeyCode.A) && selectedX - 1 != -1)
+            else if (Input.GetKeyDown(KeyCode.A) && selX - 1 != -1)
             {
-                selectedX--;
+                selX--;
             }
-            else if (Input.GetKeyDown(KeyCode.W) && selectedY + 1 != 5)
+            else if (Input.GetKeyDown(KeyCode.W) && selY + 1 != 5)
             {
-                selectedY++;
+                selY++;
 
             }
-            else if (Input.GetKeyDown(KeyCode.S) && selectedY - 1 != -1)
+            else if (Input.GetKeyDown(KeyCode.S) && selY - 1 != -1)
             {
-                selectedY--;
+                selY--;
             }
 
             //Update the cursor position.
-            cursorInstance.transform.position = nodeOnGrid[selectedX, selectedY].location;
+            cursorInstance.transform.position = nodeOnGrid[selX, selY].location;
         }
 
         #endregion
@@ -144,6 +160,8 @@ public class HackPuzzle : MonoBehaviour
     //Does exactly what you think it does.
     private void CleanUpAndClose()
     {
+
+        StopAllCoroutines();
 
         gridActive = false;
 
@@ -181,7 +199,7 @@ public class HackPuzzle : MonoBehaviour
         //Destroy text afterwards.
         Destroy(_textGameObj);
         //Finally capture the node.
-        ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Controlled);
+        ChangeNodeType(ref nodeOnGrid[selX, selY], NodeTypes.Controlled);
         //Give the player back control.
         isCapturing = false;
 
@@ -241,12 +259,10 @@ public class HackPuzzle : MonoBehaviour
                 if (IsConnected(node, nodeOnGrid[X, Y]) && type == NodeTypes.Null)
                 {
                     _connected.Add(nodeOnGrid[X, Y]);
-                    Debug.Log("Connected Node (any)");
                 }
                 else if (IsConnected(node, nodeOnGrid[X, Y]) && nodeOnGrid[X, Y].type == type)
                 {
                     _connected.Add(nodeOnGrid[X, Y]);
-                    Debug.Log("Connected Node (" + type + ")");
                 }
             }
         }
@@ -328,11 +344,14 @@ public class HackPuzzle : MonoBehaviour
                 //Create the node based on what the array says.
                 nodeOnGrid[X, Y].gameObj = CreateNodeGameObj(nodeOnGrid[X, Y].type, _offsetPosToSpawn);
                 nodeOnGrid[X, Y].location = _offsetPosToSpawn;
+                nodeOnGrid[X, Y].status = NodeStatus.Idle;
+                nodeOnGrid[X, Y].x = X;
+                nodeOnGrid[X, Y].y = Y;
             }
         }
 
         //create and instance of the cursor.
-        cursorInstance = Instantiate(cursorPrefab, nodeOnGrid[selectedX, selectedY].location, Quaternion.identity) as GameObject;
+        cursorInstance = Instantiate(cursorPrefab, nodeOnGrid[selX, selY].location, Quaternion.identity) as GameObject;
 
 
         //Here is where nodes are connected together.
@@ -358,19 +377,47 @@ public class HackPuzzle : MonoBehaviour
         {
             List<Node> _localNodes = new List<Node>();
             _localNodes = GetConnectedNodes(nodeOnGrid[aiX, aiY], NodeTypes.Null);
-            int _randomSelection = Random.Range(0, _localNodes.Count - 1);
+            int _rand = Random.Range(0, _localNodes.Count - 1);
 
-            foreach (Node n in nodeOnGrid)
+            aiTargetNode = nodeOnGrid[_localNodes[_rand].x, _localNodes[_rand].y];
+
+            aiY = aiTargetNode.y;
+            aiX = aiTargetNode.x;
+
+            if (aiTargetNode.type == NodeTypes.Firewall)
             {
-                // if (n.Equals(_localNodes.))
-                // {
-                    
-                // }
+                Debug.Log("backtracking!");
+                yield return new WaitForEndOfFrame();
+            }
+            else if (aiTargetNode.Equals(playerTargetNode))
+            {
+                Debug.Log("NodeBusy so I'll wait 1 second and try again");
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                Debug.Log("AI capturing node!");
+                StartCoroutine(AICaptureNode(aiTargetNode));
+                yield return new WaitForSeconds(5f);
             }
 
-            StartCoroutine(AICaptureNode(_localNodes[_randomSelection]));
+            //The player has lost until the loop finds a player node, otherwise they have lost as the variable hasn't changed.
+            bool _playerNodesPresent = false;
+            foreach (Node n in nodeOnGrid)
+            {
+                if (n.type == NodeTypes.Controlled)
+                {
+                    _playerNodesPresent = true;
+                }
+            }
 
-            yield return new WaitForSeconds(2f);
+            playerLost = !_playerNodesPresent;
+
+            if (playerLost)
+            {
+                //TODO end hack puzzle.
+                serverManager.EndHack(false);
+            }
         }
 
         yield return null;
@@ -393,8 +440,7 @@ public class HackPuzzle : MonoBehaviour
         //Destroy text afterwards.
         Destroy(_textGameObj);
         //Finally capture the node.
-        ChangeNodeType(ref nodeOnGrid[selectedX, selectedY], NodeTypes.Firewall);
-        //Give the player back control.
+        ChangeNodeType(ref nodeOnGrid[aiX, aiY], NodeTypes.Firewall);
 
         yield return null;
     }

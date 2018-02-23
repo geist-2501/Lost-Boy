@@ -2,55 +2,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServerInteraction : InteractableBaseClass {
+public class ServerInteraction : InteractableBaseClass
+{
 
-	[SerializeField] private Camera subCam;
+    [SerializeField] private Camera subCam;
 
-	private bool isFocus = false;
+    private bool isFocus = false;
 
-	private Camera mainCam;
-	private PlayerController playerController;
-	private HUDManager HUD;
+    private Camera mainCam;
+    private PlayerController playerController;
+    private HUDManager HUD;
 
-	[SerializeField] private Animator serverAnim;
+    [SerializeField] private Animator serverAnim;
 
-	public override void Activate() {
+    public override void Activate()
+    {
 
-		isFocus = true;
+        isFocus = true;
 
-		playerController.SetCanMove(false);
-		HUD.SetHUDvisibility(false);
+        playerController.SetCanMove(false);
+        HUD.SetHUDvisibility(false);
 
-		mainCam.enabled = false;
-		subCam.enabled = true;
+        mainCam.enabled = false;
+        subCam.enabled = true;
 
-		Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.None;
 
-		serverAnim.SetTrigger("StartupTrigger");
+        serverAnim.SetTrigger("StartupTrigger");
 
-	}
+    }
 
-	// Use this for initialization
-	void Start () {
-		playerController = FindObjectOfType<PlayerController>();
-		HUD = FindObjectOfType<HUDManager>();
-		mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (isFocus && Input.GetKeyDown(KeyCode.Escape)) {
-			isFocus = false;
+    // Use this for initialization
+    void Start()
+    {
+        playerController = FindObjectOfType<PlayerController>();
+        HUD = FindObjectOfType<HUDManager>();
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+    }
 
-			playerController.SetCanMove(true);
-			HUD.SetHUDvisibility(true);
+    // Update is called once per frame
+    void Update()
+    {
+        if (isFocus && Input.GetKeyDown(KeyCode.Escape))
+        {
+			ExitServer();
+        }
+    }
 
-			mainCam.enabled = true;
-			subCam.enabled = false;
+    public void ExitServer()
+    {
+        isFocus = false;
 
-			Cursor.lockState = CursorLockMode.Locked;
+        playerController.SetCanMove(true);
+        HUD.SetHUDvisibility(true);
 
-			serverAnim.SetTrigger("ShutdownTrigger");
-		}
-	}
+        mainCam.enabled = true;
+        subCam.enabled = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+        serverAnim.SetTrigger("ShutdownTrigger");
+    }
 }
