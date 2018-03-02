@@ -3,7 +3,7 @@ guid: 99e77eae5dbb8f143a8a2edca03fa5e4
 timeCreated: 1511299151
 licenseType: Free
 ModelImporter:
-  serializedVersion: 19
+  serializedVersion: 22
   fileIDToRecycleName:
     100000: Door
     100002: DoorWay
@@ -20,6 +20,7 @@ ModelImporter:
     100024: StairWallCollider
     100026: Wall
     100028: WallCollider
+    100030: Roof
     400000: Door
     400002: DoorWay
     400004: DoorWayCollider
@@ -35,6 +36,7 @@ ModelImporter:
     400024: StairWallCollider
     400026: Wall
     400028: WallCollider
+    400030: Roof
     2300000: Door
     2300002: DoorWay
     2300004: DoorWayCollider
@@ -49,6 +51,7 @@ ModelImporter:
     2300022: StairWallCollider
     2300024: Wall
     2300026: WallCollider
+    2300028: Roof
     3300000: Door
     3300002: DoorWay
     3300004: DoorWayCollider
@@ -63,6 +66,7 @@ ModelImporter:
     3300022: StairWallCollider
     3300024: Wall
     3300026: WallCollider
+    3300028: Roof
     4300000: Door
     4300002: StairFloorCollider
     4300004: OutsideCornerCollider
@@ -77,10 +81,23 @@ ModelImporter:
     4300022: OutsideCorner
     4300024: InsideCorner
     4300026: Wall
+    4300028: Roof
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: 5500e9ee5c8f3e846a630c7c55aac4fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: UV
+    second: {fileID: 2100000, guid: 1e23d4e642d422d42ab061aefe2ed7e6, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -93,12 +110,14 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -106,13 +125,18 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -122,6 +146,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
