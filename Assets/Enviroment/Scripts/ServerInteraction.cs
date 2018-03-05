@@ -38,6 +38,8 @@ public class ServerInteraction : InteractableBaseClass
         playerController = FindObjectOfType<PlayerController>();
         HUD = FindObjectOfType<HUDManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        subCam.enabled = false;
     }
 
     // Update is called once per frame

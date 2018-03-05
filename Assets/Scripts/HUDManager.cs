@@ -27,7 +27,7 @@ public class HUDManager : MonoBehaviour {
 			fillBox.sizeDelta = new Vector2(baseBox.rect.width * (currentValue / max), baseBox.rect.height);
 		}
 
-		public void show(bool _show) {
+		public void Show(bool _show) {
 			baseBox.gameObject.SetActive(_show);
 			fillBox.gameObject.SetActive(_show);
 		}
@@ -41,6 +41,7 @@ public class HUDManager : MonoBehaviour {
 	public RectTransform ammoCounterText;
 	public RectTransform aimingRect;
 	public RectTransform decals;
+	public RectTransform dialogueBox;
 
 	public bar healthBar;
 	public bar energyBar;
@@ -56,8 +57,9 @@ public class HUDManager : MonoBehaviour {
 		ammoCounterText.gameObject.SetActive(_vis);
 		aimingRect.gameObject.SetActive(_vis);
 		decals.gameObject.SetActive(_vis);
-		healthBar.show(_vis);
-		energyBar.show(_vis);
+		healthBar.Show(_vis);
+		energyBar.Show(_vis);
+		dialogueBox.gameObject.SetActive(_vis);
 	}
 
 }

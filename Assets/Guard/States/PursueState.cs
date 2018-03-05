@@ -32,6 +32,13 @@ public class PursueState : StateBaseClass {
 			gsc.ChangeState(typeof(ShootAtPlayerState));
 		}
 
+		if (pathToLastKnownPos.corners.Length == 0)
+		{
+			//Path is invalid somehow. I.e play is in mid air when they go out of the guards vision.
+			//For now just jump back to patrolling untill a solution is found.
+			gsc.ChangeState(typeof(PatrolingState));
+		}
+
 		if (!motor.MoveTowards(pathToLastKnownPos.corners[CurrentCorner])) {
 			if (CurrentCorner < pathToLastKnownPos.corners.Length - 1) {
 				CurrentCorner++;

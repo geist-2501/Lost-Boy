@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour {
 			motor.RotateCamera(_cameraRotation);
 
 			//Send jump signal to motor.
-			bool _isJumping = Input.GetButtonDown("Jump");
+			bool _isJumping = Input.GetKey(KeyCode.Space);
 			if (_isJumping) {
 				motor.Jump(jumpForce);
 			} else {

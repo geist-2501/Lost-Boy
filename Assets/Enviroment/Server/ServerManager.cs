@@ -6,6 +6,8 @@ using System.IO;
 
 public class ServerManager : MonoBehaviour {
 
+	private GameManager gameManager;
+
 	[SerializeField] private Text listBox;
 	[SerializeField] private HackPuzzle hackPuzzle;
 
@@ -19,6 +21,7 @@ public class ServerManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		gameManager = FindObjectOfType<GameManager>();
 		anim = GetComponent<Animator>();
 
 		string idsFilePath = "Assets/Enviroment/Server/fileIDs.txt";
@@ -46,6 +49,8 @@ public class ServerManager : MonoBehaviour {
 
 		targetFileIndex = Random.Range(0, linesOfIDs.Length - 1);
 		Debug.Log(targetFileIndex);
+		gameManager.SetTargetFileID(linesOfIDs[targetFileIndex]);
+
 	}
 
 	private void Swap <T> (ref T a, ref T b) {
