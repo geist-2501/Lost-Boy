@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Billboard : MonoBehaviour {
+public class Billboard : MonoBehaviour
+{
 
-	public Camera targetCam;
-	[SerializeField] private bool waitForTracking = false;
+    public Camera targetCam;
 
-	private void Start() {
-		if ( ! targetCam) {
-			//targetCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-			targetCam = Camera.main;
-		}
-	}
 
-	private void LateUpdate() {
-		if (! waitForTracking) {
-			transform.forward = targetCam.transform.forward;
-		}
-	}
+    private void Start()
+    {
+        targetCam = Camera.main;
 
-	public void SetTracking (bool _setTracking) {
-		waitForTracking = _setTracking;
-	}
+    }
+
+    private void LateUpdate()
+    {
+        if (targetCam)
+        {
+            transform.forward = targetCam.transform.forward;
+        }
+
+    }
+
 }

@@ -65,4 +65,6 @@ public class ServerInteraction : InteractableBaseClass
 
         serverAnim.SetTrigger("ShutdownTrigger");
     }
+
+
 }

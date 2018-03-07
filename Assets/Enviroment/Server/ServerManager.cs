@@ -48,7 +48,6 @@ public class ServerManager : MonoBehaviour {
 		}
 
 		targetFileIndex = Random.Range(0, linesOfIDs.Length - 1);
-		Debug.Log(targetFileIndex);
 		gameManager.SetTargetFileID(linesOfIDs[targetFileIndex]);
 
 	}
@@ -168,6 +167,7 @@ public class ServerManager : MonoBehaviour {
 		if (_wasSuccessful)
 		{
 			anim.SetTrigger("HackSuccess");
+			si.isLocked = true;
 		}
 		else
 		{

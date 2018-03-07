@@ -45,9 +45,12 @@ public class PlayerMotor : MotorBaseClass {
 
 		if (Physics.Raycast(_cameraForward, out hit, interactionRange)) {
 			bool _interactablePresent = hit.transform.gameObject.GetComponent<InteractableBaseClass>();
-			HUD.interactText.gameObject.SetActive(_interactablePresent);
 			if (_interactablePresent) {
 				interactable = hit.transform.gameObject.GetComponent<InteractableBaseClass>();
+				if (interactable.isLocked == false)
+				{
+					HUD.interactText.gameObject.SetActive(true);
+				}
 			} else {
 				interactable = null;
 			}
@@ -58,7 +61,7 @@ public class PlayerMotor : MotorBaseClass {
 
 		if (isInteracting) {
 			isInteracting = false;
-			if (interactable) {
+			if (interactable && interactable.isLocked == false) {
 				interactable.Activate();
 			}
 		}
