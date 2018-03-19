@@ -8,9 +8,14 @@ public class ComputerInteraction : InteractableBaseClass {
 
     private bool isFocus = false;
 
+    [SerializeField] private Dialogue openEmailDialogue;
+    private bool triggerOpenedBefore = false;
+
     private Camera mainCam;
     private PlayerController playerController;
     private HUDManager HUD;
+    private DialogueManager dialogueManager;
+    private GameManager gameManager;
 
     private Animator compAnim;
 
@@ -36,8 +41,10 @@ public class ComputerInteraction : InteractableBaseClass {
     {
         playerController = FindObjectOfType<PlayerController>();
         HUD = FindObjectOfType<HUDManager>();
+        dialogueManager = FindObjectOfType<DialogueManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 		compAnim = GetComponentInChildren<Animator>();
+        gameManager = FindObjectOfType<GameManager>();
 
         subCam.enabled = false;
 
@@ -71,6 +78,11 @@ public class ComputerInteraction : InteractableBaseClass {
     //because Unity only allows you to set trigger parameters for whatever reason.
     public void ToggleOpenEmail()
     {
+        if (!triggerOpenedBefore)
+        {
+            gameManager.PlayerAccessedComputer();
+            triggerOpenedBefore = true; //Game manager only needs to be informed once.
+        }
         compAnim.SetBool("EmailOpenBool", !compAnim.GetBool("EmailOpenBool"));
     }
 }

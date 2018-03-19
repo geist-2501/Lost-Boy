@@ -12,6 +12,11 @@ Controls the dialogue being sent to the screen.
 public class DialogueManager : MonoBehaviour
 {
 
+    [SerializeField] private Animator anim;
+
+    [Range(0, 0.1f)]
+    [SerializeField] private float displaySpeed = 0.01f;
+
     [SerializeField] private Text nameText;
     [SerializeField] private Text bodyText;
     [SerializeField] private Text contText;
@@ -28,6 +33,8 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("Starting dialogue with " + _newDialogue.npcName + ", from " + _newDialogue.name);
         
+        anim.SetBool("DialogueActive", true);
+
         nameText.text = _newDialogue.npcName;
 
         sentences.Clear();
@@ -64,13 +71,14 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in _sentence.ToCharArray())
         {
             bodyText.text += letter;
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(displaySpeed);
         }
         contText.gameObject.SetActive(true);
     }
 
     void EndDialogue() 
     {
+        anim.SetBool("DialogueActive", false);
         Debug.Log("End of convo");
         nameText.text = "";
         bodyText.text = "";

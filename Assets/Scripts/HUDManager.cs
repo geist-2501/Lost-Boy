@@ -59,7 +59,6 @@ public class HUDManager : MonoBehaviour {
 		decals.gameObject.SetActive(_vis);
 		healthBar.Show(_vis);
 		energyBar.Show(_vis);
-		dialogueBox.gameObject.SetActive(_vis);
 	}
 
 }

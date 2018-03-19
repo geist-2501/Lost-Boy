@@ -35,7 +35,6 @@ public class HackPuzzle : MonoBehaviour
 
     private int aiX = 0;
     private int aiY = 0;
-    private Random patheticAIbrain = new Random();
     private Node aiTargetNode;
 
 

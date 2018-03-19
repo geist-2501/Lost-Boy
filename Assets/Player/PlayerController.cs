@@ -21,19 +21,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Gun currentGun;
 
-    private bool canMove = true;
-    private bool focusedOnOther = false;
-
     [SerializeField]
     private MotorBaseClass motor;
     private HUDManager HUD;
-	private DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
 
     private void Start()
     {
         HUD = FindObjectOfType<HUDManager>();
-		dialogueManager = FindObjectOfType<DialogueManager>();
+        dialogueManager = FindObjectOfType<DialogueManager>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -44,7 +41,6 @@ public class PlayerController : MonoBehaviour
 
     public void SetCanMove(bool _canMove)
     {
-        canMove = _canMove;
         motor.canMove = _canMove;
         currentGun.isAbleToShoot = _canMove;
     }
@@ -66,67 +62,66 @@ public class PlayerController : MonoBehaviour
         HUD.healthBar.setValue(health);
         HUD.energyBar.setValue(energy);
 
-        if (motor.canMove)
+
+
+        float _xMov = Input.GetAxisRaw("Horizontal");
+        float _zMov = Input.GetAxisRaw("Vertical");
+
+        Vector3 _xVel = transform.right * _xMov;
+        Vector3 _zVel = transform.forward * _zMov;
+
+        //Direction * speed.
+        Vector3 _velocity = (_xVel + _zVel).normalized * speed;
+
+        //Apply sprint modifier if shift key is down.
+        if (Input.GetAxisRaw("Fire3") == 1 && energy > 0)
         {
-
-            float _xMov = Input.GetAxisRaw("Horizontal");
-            float _zMov = Input.GetAxisRaw("Vertical");
-
-            Vector3 _xVel = transform.right * _xMov;
-            Vector3 _zVel = transform.forward * _zMov;
-
-            //Direction * speed.
-            Vector3 _velocity = (_xVel + _zVel).normalized * speed;
-
-            //Apply sprint modifier if shift key is down.
-            if (Input.GetAxisRaw("Fire3") == 1 && energy > 0)
-            {
-                _velocity *= sprintModifier;
-                energy -= energyConsumptionRate;
-            }
-
-            //Apply movement.
-            motor.Move(_velocity);
-
-            //Pivot around y-axis.
-            float _yRot = Input.GetAxisRaw("Mouse X");
-
-            Vector3 _rotation = new Vector3(0, _yRot, 0) * lookSensitivity;
-
-            //Apply rotation.
-            motor.Rotate(_rotation);
-
-            //Pivot camera up and down.
-            float _xRot = Input.GetAxisRaw("Mouse Y");
-
-            Vector3 _cameraRotation = new Vector3(_xRot, 0, 0) * lookSensitivity;
-
-            //Apply rotation.
-            motor.RotateCamera(_cameraRotation);
-
-            //Send jump signal to motor.
-            bool _isJumping = Input.GetKey(KeyCode.Space);
-            if (_isJumping)
-            {
-                motor.Jump(jumpForce);
-            }
-            else
-            {
-                _isJumping = false;
-            }
-
-            //Send interact signal to motor.
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                motor.Interact();
-            }
-
-			//Read next line of dialogue.
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-				dialogueManager.DisplayNextSentence();
-            }
+            _velocity *= sprintModifier;
+            energy -= energyConsumptionRate;
         }
+
+        //Apply movement.
+        motor.Move(_velocity);
+
+        //Pivot around y-axis.
+        float _yRot = Input.GetAxisRaw("Mouse X");
+
+        Vector3 _rotation = new Vector3(0, _yRot, 0) * lookSensitivity;
+
+        //Apply rotation.
+        motor.Rotate(_rotation);
+
+        //Pivot camera up and down.
+        float _xRot = Input.GetAxisRaw("Mouse Y");
+
+        Vector3 _cameraRotation = new Vector3(_xRot, 0, 0) * lookSensitivity;
+
+        //Apply rotation.
+        motor.RotateCamera(_cameraRotation);
+
+        //Send jump signal to motor.
+        bool _isJumping = Input.GetKey(KeyCode.Space);
+        if (_isJumping)
+        {
+            motor.Jump(jumpForce);
+        }
+        else
+        {
+            _isJumping = false;
+        }
+
+        //Send interact signal to motor.
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            motor.Interact();
+        }
+
+        //Read next line of dialogue.
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            dialogueManager.DisplayNextSentence();
+        }
+
     }
 
 }

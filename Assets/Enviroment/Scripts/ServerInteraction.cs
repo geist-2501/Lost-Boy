@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class ServerInteraction : InteractableBaseClass
 {
+    private GameManager gameManager; 
+
 
     [SerializeField] private Camera subCam;
 
     private bool isFocus = false;
+    private bool firstTimeAccess = true;
 
     private Camera mainCam;
     private PlayerController playerController;
@@ -19,6 +22,12 @@ public class ServerInteraction : InteractableBaseClass
     {
 
         isFocus = true;
+
+        if (isFocus && firstTimeAccess)
+        {
+            gameManager.PlayerAccessedServer();
+            firstTimeAccess = false;
+        }
 
         playerController.SetCanMove(false);
         HUD.SetHUDvisibility(false);
@@ -38,6 +47,7 @@ public class ServerInteraction : InteractableBaseClass
         playerController = FindObjectOfType<PlayerController>();
         HUD = FindObjectOfType<HUDManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        gameManager = FindObjectOfType<GameManager>();
 
         subCam.enabled = false;
     }
