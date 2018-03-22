@@ -90,6 +90,6 @@ public class GameManager : MonoBehaviour
 
     public void EndLevel()
     {
-        levelManager.LoadSceneAdvanced("MissionComplete");
+        levelManager.LoadSceneBasic("MissionComplete");
     }
 }
