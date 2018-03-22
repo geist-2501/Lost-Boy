@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
 
     private DialogueManager dialogueManager;
+    private LevelManager levelManager;
 
     #region dialogue
     //Introduction. I.e tells the player what to do.
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         dialogueManager = GetComponent<DialogueManager>();
+        levelManager = GetComponent<LevelManager>();
         dialogueManager.LoadDialogue(dialogueIntro);
     }
 
@@ -78,6 +80,16 @@ public class GameManager : MonoBehaviour
 
     public void PlayerLeavingLevel()
     {
-        
+        pSuccessEscape = true;
+        if (pSuccessEscape && pSuccessHack)
+        {
+            dialogueManager.LoadDialogue(dialogueEscapeSuccess);
+            Invoke("EndLevel", 2f);
+        }
+    }
+
+    public void EndLevel()
+    {
+        levelManager.LoadSceneAdvanced("MissionComplete");
     }
 }
