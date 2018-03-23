@@ -4,33 +4,26 @@
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField]
-    private float health = 100f;
-    [SerializeField]
-    private float energy = 50f;
-    [SerializeField]
-    private float energyConsumptionRate = 1f;
-    [SerializeField]
-    private float speed = 5f;
-    [SerializeField]
-    private float sprintModifier = 1.5f;
-    [SerializeField]
-    private float lookSensitivity = 5f;
-    [SerializeField]
-    private float jumpForce = 5f;
-    [SerializeField]
-    private Gun currentGun;
+    [SerializeField] private float health = 100f;
+    [SerializeField] private float energy = 50f;
+    [SerializeField] private float energyConsumptionRate = 1f;
+    [SerializeField] private float speed = 5f;
+    [SerializeField] private float sprintModifier = 1.5f;
+    [SerializeField] private float lookSensitivity = 5f;
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private Gun currentGun;
 
-    [SerializeField]
-    private MotorBaseClass motor;
+    [SerializeField] private MotorBaseClass motor;
     private HUDManager HUD;
     private DialogueManager dialogueManager;
+    private LevelManager levelManager;
 
 
     private void Start()
     {
         HUD = FindObjectOfType<HUDManager>();
         dialogueManager = FindObjectOfType<DialogueManager>();
+        levelManager = FindObjectOfType<LevelManager>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -50,7 +43,7 @@ public class PlayerController : MonoBehaviour
         health -= _damage;
         if (health <= 0)
         {
-            //TODO gameover!
+            levelManager.LoadSceneBasic("MissionFailed");
             Debug.Log("You are dead!");
         }
     }
