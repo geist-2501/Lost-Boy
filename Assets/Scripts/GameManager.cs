@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     private DialogueManager dialogueManager;
     private LevelManager levelManager;
+    private HUDManager HUD;
 
     #region dialogue
     //Introduction. I.e tells the player what to do.
@@ -26,7 +27,9 @@ public class GameManager : MonoBehaviour
 
     #region objects
     [SerializeField] private Text fileIdText;
-	[SerializeField] private Text serverIdText;
+    [SerializeField] private Text serverIdText;
+
+    [SerializeField] private PlayerMotor playerMotor;
     #endregion
 
     private string targetFileID;
@@ -37,14 +40,24 @@ public class GameManager : MonoBehaviour
     private bool pSuccessHack = false;
     private bool pSuccessEscape = false;
 
+    public bool isPaused = false;
+
+
 
     void Start()
     {
         dialogueManager = GetComponent<DialogueManager>();
         levelManager = GetComponent<LevelManager>();
+        HUD = FindObjectOfType<HUDManager>();
         dialogueManager.LoadDialogue(dialogueIntro);
     }
 
+    public void PauseGame()
+    {
+        isPaused = !isPaused;
+        HUD.ShowPauseGame(isPaused);
+        playerMotor.canMove = !isPaused;
+    }
 
     public void SetTargetFileID(string _id)
     {
@@ -52,12 +65,12 @@ public class GameManager : MonoBehaviour
         fileIdText.text = targetFileID;
     }
 
-	public void PlayerAccessedComputer()
-	{
-		pAccessComputer = true;
+    public void PlayerAccessedComputer()
+    {
+        pAccessComputer = true;
         serverIdText.text = targetFileID;
         dialogueManager.LoadDialogue(dialogueAccessComputer);
-	}
+    }
 
     public void PlayerAccessedServer()
     {
@@ -65,7 +78,7 @@ public class GameManager : MonoBehaviour
         if (pAccessComputer)
         {
             dialogueManager.LoadDialogue(dialogueAccessServerAfterComputer);
-        } 
+        }
         else
         {
             dialogueManager.LoadDialogue(dialogueAccessServerBeforeComputer);
@@ -74,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     public void PlayerHackedServer()
     {
-		pSuccessHack = true;
+        pSuccessHack = true;
         dialogueManager.LoadDialogue(dialogueServerHackSuccess);
     }
 

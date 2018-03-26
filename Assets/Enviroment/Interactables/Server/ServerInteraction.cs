@@ -22,6 +22,7 @@ public class ServerInteraction : InteractableBaseClass
     {
 
         isFocus = true;
+        playerController.isFocusedOnOther = true;
 
         if (isFocus && firstTimeAccess)
         {
@@ -64,6 +65,7 @@ public class ServerInteraction : InteractableBaseClass
     public void ExitServer()
     {
         isFocus = false;
+        playerController.isFocusedOnOther = false;
 
         playerController.SetCanMove(true);
         HUD.SetHUDvisibility(true);

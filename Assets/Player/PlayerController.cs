@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     private HUDManager HUD;
     private DialogueManager dialogueManager;
     private LevelManager levelManager;
+    private GameManager gameManager;
+
+    public bool isFocusedOnOther = false;
 
 
     private void Start()
@@ -24,6 +27,7 @@ public class PlayerController : MonoBehaviour
         HUD = FindObjectOfType<HUDManager>();
         dialogueManager = FindObjectOfType<DialogueManager>();
         levelManager = FindObjectOfType<LevelManager>();
+        gameManager = FindObjectOfType<GameManager>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -113,6 +117,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             dialogueManager.DisplayNextSentence();
+        }
+
+        if (!isFocusedOnOther)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                gameManager.PauseGame();
+            }
         }
 
     }

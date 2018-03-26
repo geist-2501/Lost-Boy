@@ -27,7 +27,7 @@ public class ServerManager : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         anim = GetComponent<Animator>();
 
-        string idsFilePath = "Assets/Enviroment/Server/fileIDs.txt";
+        string idsFilePath = "Assets/Enviroment/Interactables/Server/fileIDs.txt";
 
         linesOfIDs = File.ReadAllLines(idsFilePath);
 

@@ -42,14 +42,31 @@ public class HUDManager : MonoBehaviour {
 	public RectTransform aimingRect;
 	public RectTransform decals;
 	public RectTransform dialogueBox;
+	public RectTransform pauseMenu;
 
 	public bar healthBar;
 	public bar energyBar;
+
+	private bool isPaused = false;
 
 	// Use this for initialization
 	void Start () {
 		healthBar = new bar(healthBarBase, 100f);
 		energyBar = new bar(energyBarBase, 50f);
+	}
+
+	public void ShowPauseGame(bool _pause)
+	{
+		isPaused = _pause;
+		pauseMenu.gameObject.SetActive(isPaused);
+		if (isPaused)
+		{
+			Cursor.lockState = CursorLockMode.None;
+		}
+		else
+		{
+			Cursor.lockState = CursorLockMode.Confined;
+		}
 	}
 
 	public void SetHUDvisibility (bool _vis) {

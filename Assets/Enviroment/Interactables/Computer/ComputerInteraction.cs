@@ -22,6 +22,7 @@ public class ComputerInteraction : InteractableBaseClass {
     {
 
         isFocus = true;
+        playerController.isFocusedOnOther = true;
 
         playerController.SetCanMove(false);
         HUD.SetHUDvisibility(false);
@@ -61,6 +62,7 @@ public class ComputerInteraction : InteractableBaseClass {
     public void ExitComp()
     {
         isFocus = false;
+        playerController.isFocusedOnOther = false;
 
         playerController.SetCanMove(true);
         HUD.SetHUDvisibility(true);

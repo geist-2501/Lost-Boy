@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+Blair Cross
+AI state that makes the guard patrol through
+waypoints.
+ */
+
 public class PatrolingState : StateBaseClass {
 
 	public float timeToSpotPlayer = 1f;
