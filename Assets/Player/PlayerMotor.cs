@@ -22,7 +22,7 @@ public class PlayerMotor : MotorBaseClass {
 		}
 
 		Ray _checkGroundClearance = new Ray(transform.position, -transform.up); //shoot a ray downwards.
-		canJump = Physics.Raycast(_checkGroundClearance, (col.height / 2) + 0.01f);
+		canJump = Physics.Raycast(_checkGroundClearance, (col.height / 2) + 0.05f);
 
 		if (canJump) {
 			rb.AddForce(jumpForce, ForceMode.Impulse);

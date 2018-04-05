@@ -10,6 +10,8 @@ public class ServerManager : MonoBehaviour
     private GameManager gameManager;
     private DialogueManager dialogueManager;
 
+    [SerializeField] private TextAsset txtFileOfIds;
+
     [SerializeField] private Text listBox;
     [SerializeField] private HackPuzzle hackPuzzle;
 
@@ -27,9 +29,16 @@ public class ServerManager : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         anim = GetComponent<Animator>();
 
-        string idsFilePath = "Assets/Enviroment/Interactables/Server/fileIDs.txt";
-
-        linesOfIDs = File.ReadAllLines(idsFilePath);
+        using (System.IO.StringReader r = new System.IO.StringReader(txtFileOfIds.text))
+        {
+            string line;
+            int i = 0;
+            while ((line = r.ReadLine()) != null)
+            {
+                linesOfIDs[i] = line;
+                i++;
+            }
+        }
 
         for (int i = 0; i < linesOfIDs.Length; i++)
         {
